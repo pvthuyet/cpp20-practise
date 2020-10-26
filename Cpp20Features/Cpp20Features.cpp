@@ -2,14 +2,41 @@
 //
 
 #include <iostream>
+#include <ranges>
+#include "printer_concepts.h"
 
+import FibCoroutines;
+import FibGenerator;
 import DefaultPrinter;
+import BetterPrinter;
+
+struct DefaultFormat
+{
+	template<is_series S, is_printer T>
+	void format(T t, S s)
+	{
+		while (!s.done())
+		{
+			t.printElement(s.next());
+			t.printSeparator();
+		}
+		t.printEol();
+	}
+};
+
+template<typename S, 
+	typename T = DefaultPrinter, 
+	typename F = DefaultFormat> 
+	requires is_series_printer<T, S, F> void print(S& s)
+{
+	F{}.format(T{}, s);
+}
 
 int main()
 {
-    using namespace std::string_literals;
-    DefaultPrinter printer;
-    printer.printMsg(std::string{ "Hello World!" });
+	int len = 6;
+	fib f1 = genFib(1, len);
+	print(f1);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

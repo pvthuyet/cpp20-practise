@@ -5,11 +5,6 @@ export module DefaultPrinter;
 
 export struct DefaultPrinter
 {
-	void printMsg(std::string const& s)
-	{
-		std::cout << s << std::endl;
-	}
-
 	void printElement(int e)
 	{
 		std::cout << e << " ";
