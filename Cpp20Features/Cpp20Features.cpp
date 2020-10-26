@@ -3,9 +3,13 @@
 
 #include <iostream>
 
+import DefaultPrinter;
+
 int main()
 {
-    std::cout << "Hello World!\n";
+    using namespace std::string_literals;
+    DefaultPrinter printer;
+    printer.printMsg(std::string{ "Hello World!" });
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
