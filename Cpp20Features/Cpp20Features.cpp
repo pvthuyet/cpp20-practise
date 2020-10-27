@@ -3,12 +3,22 @@
 
 #include <iostream>
 #include <ranges>
+#include <future>
+#include <coroutine>
+#include <thread>
+#include <chrono>
 #include "printer_concepts.h"
 
 import FibCoroutines;
 import FibGenerator;
 import DefaultPrinter;
 import BetterPrinter;
+import ResumableThing;
+import IntGenerator;
+
+using namespace std;
+
+#define LOGINFO	cout << "[" << std::this_thread::get_id() << "] [" << __func__ << "] "
 
 struct DefaultFormat
 {
@@ -32,11 +42,76 @@ template<typename S,
 	F{}.format(T{}, s);
 }
 
+ResumableThing counter()
+{
+	LOGINFO << "called\n";
+	for (unsigned i = 0;; ++i)
+	{
+		co_await std::suspend_always{};
+		LOGINFO << "resumed (#" << i << ")\n";
+	}
+}
+
+void testCounter()
+{
+	using namespace std::chrono_literals;
+	LOGINFO << "calling counter\n";
+	auto theCounter = counter();
+	LOGINFO << "resuming counter\n";
+	for (int i = 0; i < 5; ++i) 
+	{
+		theCounter.resume();
+		std::this_thread::sleep_for(1s);
+	}
+	LOGINFO << "done\n";
+}
+
+thread_local int thrVal = 0;
+ResumableThing nameCounter(std::string name)
+{
+	LOGINFO << "called\n";
+	for (unsigned i = 0;; ++i)
+	{
+		co_await std::suspend_always{};
+		LOGINFO << name << " resumed (#" << thrVal++ << ")\n";
+	}
+}
+
+void testNameCounter()
+{
+	using namespace std::chrono_literals;
+	auto counterA = nameCounter("A");
+	auto counterB = nameCounter("B");
+	counterA.resume();
+	counterB.resume();
+	std::this_thread::sleep_for(1s);
+	counterB.resume();
+	counterA.resume();
+}
+
+IntGenerator integers(int first, int last)
+{
+	for (int i = first; i <= last; ++i)
+	{
+		co_yield i;
+	}
+}
+
+void testIntGenerator()
+{
+	for(int x : integers(1, 5))
+		LOGINFO << x << '\n';
+}
+
 int main()
 {
-	int len = 6;
-	fib f1 = genFib(1, len);
-	print(f1);
+	//testCounter();
+	//testNameCounter();
+	//testCoroutine();
+	testIntGenerator();
+	//int len = 6;
+	//fib f1 = genFib(1, len);
+	//print(f1);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

@@ -18,6 +18,12 @@
     <ClCompile Include="Cpp20Features.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="resumable_thing.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="int_generator.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">
