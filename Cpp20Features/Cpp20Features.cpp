@@ -14,7 +14,7 @@ import FibGenerator;
 import DefaultPrinter;
 import BetterPrinter;
 import ResumableThing;
-import IntGenerator;
+import Generator;
 
 using namespace std;
 
@@ -89,11 +89,11 @@ void testNameCounter()
 	counterA.resume();
 }
 
-IntGenerator integers(int first, int last)
+Generator<int> integers(int first, int last)
 {
 	for (int i = first; i <= last; ++i)
 	{
-		LOGINFO << "co_yield " << i << std::endl;
+		//LOGINFO << "co_yield " << i << std::endl;
 		co_yield i;
 	}
 }
