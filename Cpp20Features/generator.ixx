@@ -4,7 +4,8 @@
 #include <concepts>
 
 export module Generator;
-export template<std::integral T> 
+
+template<typename T> 
 struct Generator
 {
 	struct promise_type;
@@ -76,3 +77,5 @@ struct Generator
 		void unhandle_exception() {}
 	};
 };
+
+export using IntGenerator = Generator<int>;

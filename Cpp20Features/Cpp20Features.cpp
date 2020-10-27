@@ -89,23 +89,22 @@ void testNameCounter()
 	counterA.resume();
 }
 
-Generator<int> integers(int first, int last)
+IntGenerator integers(int first, int last)
 {
 	for (int i = first; i <= last; ++i)
 	{
-		//LOGINFO << "co_yield " << i << std::endl;
+		LOGINFO << "co_yield " << i << std::endl;
 		co_yield i;
 	}
 }
 
 void testIntGenerator()
 {
-	auto theIntegral = integers(1, 5);
-	for(auto it = theIntegral.begin(); it != theIntegral.end(); ++it)
-		LOGINFO << *it << '\n';
+	//auto theIntegral = integers(1, 5);
+	//for(auto it = theIntegral.begin(); it != theIntegral.end(); ++it)
+	//	LOGINFO << *it << '\n';
 
-	//for(int x : integers(1, 5)) {}
-	//	//LOGINFO << x << '\n';
+	for (int x : integers(1, 5)) {}
 }
 
 int main()

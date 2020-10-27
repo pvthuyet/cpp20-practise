@@ -21,7 +21,7 @@
     <ClCompile Include="resumable_thing.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="int_generator.ixx">
+    <ClCompile Include="generator.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
