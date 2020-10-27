@@ -63,6 +63,7 @@ export struct IntGenerator
 	int get()
 	{
 		if (_coro) return _coro.promise()._val;
+		return 0;
 	}
 
 	struct promise_type

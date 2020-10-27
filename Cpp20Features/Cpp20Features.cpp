@@ -93,18 +93,24 @@ IntGenerator integers(int first, int last)
 {
 	for (int i = first; i <= last; ++i)
 	{
+		LOGINFO << "co_yield " << i << std::endl;
 		co_yield i;
 	}
 }
 
 void testIntGenerator()
 {
-	for(int x : integers(1, 5))
-		LOGINFO << x << '\n';
+	auto theIntegral = integers(1, 5);
+	for(auto it = theIntegral.begin(); it != theIntegral.end(); ++it)
+		LOGINFO << *it << '\n';
+
+	//for(int x : integers(1, 5)) {}
+	//	//LOGINFO << x << '\n';
 }
 
 int main()
 {
+	LOGINFO << "Start\n";
 	//testCounter();
 	//testNameCounter();
 	//testCoroutine();
@@ -112,6 +118,7 @@ int main()
 	//int len = 6;
 	//fib f1 = genFib(1, len);
 	//print(f1);
+	LOGINFO << "End\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
