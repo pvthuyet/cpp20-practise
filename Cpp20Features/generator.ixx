@@ -2,6 +2,7 @@
 #include <iterator>
 #include <compare>
 #include <concepts>
+#include <string>
 
 export module Generator;
 
@@ -24,10 +25,10 @@ struct Generator
 			return *this;
 		}
 
-		int operator*() const noexcept
+		T operator*() const noexcept
 		{
 			if (_coro) return _coro.promise()._val;
-			return 0;
+			return T{};
 		}
 
 		bool operator==(const iterator& rhs) const noexcept
@@ -79,3 +80,4 @@ struct Generator
 };
 
 export using IntGenerator = Generator<int>;
+export using StringGenerator = Generator<std::string>;
