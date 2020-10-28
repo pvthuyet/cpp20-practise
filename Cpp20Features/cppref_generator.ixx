@@ -4,6 +4,7 @@
 #include <string>
 #include <chrono>
 #include <random>
+#include <stdexcept>
 
 export module CpprefGenerator;
 
@@ -30,7 +31,10 @@ namespace cppref
 			// Disallow co_await in generator coroutines.
 			void await_transform() = delete;
 			void return_void() {}
-			static void unhandled_exception() { throw; }
+			static void unhandled_exception() 
+			{ 
+				std::rethrow_exception(std::current_exception());
+			}
 
 			std::optional<T> current_value;
 		};
@@ -64,6 +68,15 @@ namespace cppref
 				other.m_coroutine = {};
 			}
 			return *this;
+		}
+
+		const T& operator()() const
+		{
+			if (m_coroutine && !m_coroutine.done()) 
+			{
+				m_coroutine.resume();
+			}
+			return *m_coroutine.promise().current_value;
 		}
 
 		// Range-based for loop support.
@@ -121,7 +134,7 @@ export namespace cppref
 	template<class T>
 	concept TString = std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring>;
 	template<TString T>
-	Generator<T> ranges(unsigned len)
+	Generator<T> range(unsigned len)
 	{
 		constexpr const char alphabet[] =
 		{ '0','1','2','3','4','5','6','7','8','9',
