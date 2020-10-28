@@ -3,10 +3,12 @@
 #include <compare>
 #include <concepts>
 #include <string>
+#include <chrono>
+#include <random>
 
 export module Generator;
 
-template<typename T> 
+template<typename T>
 struct Generator
 {
 	struct promise_type;
@@ -75,9 +77,39 @@ struct Generator
 			return std::suspend_always{};
 		}
 		void return_void() {}
-		void unhandle_exception() {}
+		void unhandled_exception() {}
 	};
 };
+//===================================================================================================================
 
 export using IntGenerator = Generator<int>;
+export IntGenerator integers(int first, int last)
+{
+	for (int i = first; i <= last; ++i)
+	{
+		co_yield i;
+	}
+}
+//===================================================================================================================
+
 export using StringGenerator = Generator<std::string>;
+export StringGenerator genStrings()
+{
+	constexpr const char alphabet[] =
+	{ '0','1','2','3','4','5','6','7','8','9',
+	  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+	  'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
+
+	unsigned int seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
+	std::default_random_engine gen(seed);
+	std::uniform_int_distribution<unsigned> dis(0, sizeof(alphabet) - 1);
+	constexpr unsigned len = 13;
+	std::string s(len, 0);
+	for (;;)
+	{
+		for (unsigned i = 0; i < len; ++i) {
+			s[i] = alphabet[dis(gen)];
+		}
+		co_yield s;
+	}
+}

@@ -8,6 +8,7 @@
 #include <thread>
 #include <chrono>
 #include <random>
+#include <exception>
 #include "printer_concepts.h"
 
 import FibCoroutines;
@@ -16,6 +17,7 @@ import DefaultPrinter;
 import BetterPrinter;
 import ResumableThing;
 import Generator;
+import CpprefGenerator;
 
 using namespace std;
 
@@ -90,67 +92,43 @@ void testNameCounter()
 	counterA.resume();
 }
 
-IntGenerator integers(int first, int last)
-{
-	for (int i = first; i <= last; ++i)
-	{
-		LOGINFO << "co_yield - integers: " << i << std::endl;
-		co_yield i;
-	}
-}
-
 void testIntGenerator()
 {
-	//auto theIntegral = integers(1, 5);
-	//for(auto it = theIntegral.begin(); it != theIntegral.end(); ++it)
-	//	LOGINFO << *it << '\n';
-
-	for (int x : integers(1, 5)) {}
-}
-
-
-StringGenerator genStrings(int num)
-{
-	constexpr const char alphabet[] =
-	{ '0','1','2','3','4','5','6','7','8','9',
-	  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-	  'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
-
-	unsigned int seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
-	std::default_random_engine gen(seed);
-	std::uniform_int_distribution<unsigned> dis(0, sizeof(alphabet) - 1);
-	constexpr unsigned len = 13;
-	std::string str(len, 0);
-
-	for (int i = 0; i < num; ++i)
-	{
-		for (unsigned i = 0; i < len; ++i) {
-			str[i] = alphabet[dis(gen)];
-		}
-
-		LOGINFO << "co_yield - string: " << str << std::endl;
-		co_yield str;
+	for (int x : integers(1, 5)) {
+		LOGINFO << x << std::endl;
 	}
 }
 
 void testStringGenerator()
 {
-	for (auto&& x : genStrings(5)) {
-		//LOGINFO << x << '\n';
+	int i = 0;
+	for (auto&& s : genStrings()) {
+		LOGINFO << s << std::endl;
+		if (++i == 5) break;
+	}
+}
+
+void testCpprefGenerator()
+{
+	for (int i : cppref::range(1, 10))
+	{
+		LOGINFO << i << std::endl;
 	}
 }
 
 int main()
 {
 	LOGINFO << "Start\n";
-	//testCounter();
-	//testNameCounter();
-	//testCoroutine();
-	//testIntGenerator();
-	testStringGenerator();
-	//int len = 6;
-	//fib f1 = genFib(1, len);
-	//print(f1);
+	try
+	{
+		//testIntGenerator();
+		//testStringGenerator();
+		testCpprefGenerator();
+	}
+	catch (std::exception const& ex)
+	{
+		LOGINFO << ex.what() << '\n';
+	}
 	LOGINFO << "End\n";
 }
 

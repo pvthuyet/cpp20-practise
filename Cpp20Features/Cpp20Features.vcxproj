@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cpp20Features.cpp" />
+    <ClCompile Include="cppref_generator.ixx" />
     <ClCompile Include="generator.ixx" />
     <ClCompile Include="resumable_thing.ixx" />
   </ItemGroup>

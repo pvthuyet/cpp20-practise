@@ -24,6 +24,9 @@
     <ClCompile Include="generator.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cppref_generator.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">
