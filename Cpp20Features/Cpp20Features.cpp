@@ -110,9 +110,17 @@ void testStringGenerator()
 
 void testCpprefGenerator()
 {
-	for (int i : cppref::range(1, 10))
+	auto iGen = cppref::range(1, 10);
+	for (auto i : iGen)
 	{
 		LOGINFO << i << std::endl;
+	}
+
+	int loop = 0;
+	for (auto i : cppref::ranges<string>(33))
+	{
+		LOGINFO << i << std::endl;
+		if (++loop > 10) break;
 	}
 }
 
