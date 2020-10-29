@@ -5,6 +5,7 @@
 #include <chrono>
 #include <random>
 #include <stdexcept>
+#include <utility>
 
 export module CpprefGenerator;
 
@@ -54,9 +55,8 @@ namespace cppref
 		Generator& operator=(Generator const&) = delete;
 
 		Generator(Generator&& other) noexcept :
-			m_coroutine{ other.m_coroutine }
+			m_coroutine{ std::exchange(other.m_coroutine, nullptr) }
 		{
-			other.m_coroutine = {};
 		}
 
 		Generator& operator=(Generator&& other) noexcept
@@ -64,8 +64,7 @@ namespace cppref
 			if (this != &other)
 			{
 				this->~Generator();
-				this->m_coroutine = other.m_coroutine;
-				other.m_coroutine = {};
+				this->m_coroutine = std::exchange(other.m_coroutine, nullptr);
 			}
 			return *this;
 		}
@@ -80,10 +79,10 @@ namespace cppref
 		}
 
 		// Range-based for loop support.
-		class Iter
+		class Iterator
 		{
 		public:
-			explicit Iter(Handle coroutine) :
+			explicit Iterator(Handle coroutine) :
 				m_coroutine{ coroutine }
 			{}
 
@@ -106,10 +105,10 @@ namespace cppref
 			Handle m_coroutine;
 		};
 
-		Iter begin()
+		Iterator begin()
 		{
 			if (m_coroutine) m_coroutine.resume();
-			return Iter{ m_coroutine };
+			return Iterator{ m_coroutine };
 		}
 
 		std::default_sentinel_t end() { return {}; }
