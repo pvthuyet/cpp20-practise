@@ -141,8 +141,14 @@ int testSfinaeCpp17()
 
 int testSfinaeCpp17Fold()
 {
-	int x = 4;
-	auto sum = sumCpp17Fold(1, 2, 3.7, &x);
+	auto sum = sumCpp17Fold(1, 2, 3.7);
+	std::cout << sum << std::endl;
+	return 0;
+}
+
+int testSfinaeCpp20()
+{
+	auto sum = sumCpp20(1.0, 2, 3.7);
 	std::cout << sum << std::endl;
 	return 0;
 }
@@ -151,7 +157,8 @@ int main()
 {
 	//return testSfinae11();
 	//return testSfinaeCpp17();
-	return testSfinaeCpp17Fold();
+	//return testSfinaeCpp17Fold();
+	return testSfinaeCpp20();
 
 	LOGINFO << "Start\n";
 	try

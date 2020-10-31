@@ -47,3 +47,16 @@ auto sumCpp17Fold(T first, Args ...args)
 {
 	return (first + ... + args);
 }
+
+/**********************************************************************************************/
+/* C++20
+*/
+template<typename T>
+concept Real = std::is_floating_point_v<T> || std::is_integral_v<T>;
+
+export
+template<Real T, typename ...Args>
+auto sumCpp20(T first, Args ...args)
+{
+	return (first + ... + args);
+}
