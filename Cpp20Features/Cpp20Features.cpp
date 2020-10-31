@@ -123,8 +123,36 @@ void testCpprefGenerator()
 	}
 }
 
+import sfinae;
+
+int testSfinaeCpp11()
+{
+	auto sum = sumCpp11(1, 2, 3.7);
+	std::cout << sum << std::endl;
+	return 0;
+}
+
+int testSfinaeCpp17()
+{
+	auto sum = sumCpp17(1, 2, 3.7f);
+	std::cout << sum << std::endl;
+	return 0;
+}
+
+int testSfinaeCpp17Fold()
+{
+	int x = 4;
+	auto sum = sumCpp17Fold(1, 2, 3.7, &x);
+	std::cout << sum << std::endl;
+	return 0;
+}
+
 int main()
 {
+	//return testSfinae11();
+	//return testSfinaeCpp17();
+	return testSfinaeCpp17Fold();
+
 	LOGINFO << "Start\n";
 	try
 	{
