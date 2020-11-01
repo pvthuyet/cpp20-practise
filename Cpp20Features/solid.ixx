@@ -5,27 +5,38 @@ export module solid;
 class Shape
 {
 public:
-	virtual ~Shape() noexcept {}
+	virtual ~Shape() noexcept = default;
 	virtual double getArea() const = 0;
 	//virtual void draw() const = 0; // Violate ISP, and maybe SRP
 };
 
-class Circle;
 class Drawable
 {
 public:
-	virtual ~Drawable() noexcept {}
-	virtual void draw(const Circle& c) const 
+	virtual ~Drawable() noexcept = default;
+	virtual void draw() const = 0;
+	//virtual void draw(const Circle& c) const  // Violate SRP
+	//{
+	//	std::cout << "Circle\n";
+	//}
+};
+
+/* Circle *************************************************************************************************/
+class Circle;
+class DrawCircle : public Drawable
+{
+public:
+	virtual ~DrawCircle() noexcept = default;
+	virtual void draw() const override
 	{
 		std::cout << "Circle\n";
 	}
 };
 
-/* Circle *************************************************************************************************/
 class Circle : public Shape
 {
 public:
-	virtual ~Circle() noexcept {}
+	virtual ~Circle() noexcept = default;
 	explicit Circle(double radius) : _radius{ radius } 
 	{}
 
@@ -34,25 +45,28 @@ public:
 		return 3.14 * _radius;
 	}
 
-	virtual void draw() const
+	void draw() const
 	{
-		_painter.draw(*this);
+		_painter.draw();
 	}
 
 private:
 	double _radius;
-	Drawable _painter;
+	DrawCircle _painter;
 };
 
-/* Circle *************************************************************************************************/
+/* Rectangle ***********************************************************************************************/
 class Rectangle : public Shape
 {
 public:
-	virtual ~Rectangle() noexcept {}
+	Rectangle() noexcept = default;
+	virtual ~Rectangle() noexcept = default;
 	explicit Rectangle(double w, double h) : 
 		_width{ w }, _height { h }
 	{}
 
+	virtual void setw(double w) { _width = w; }
+	virtual void seth(double h) { _width = h; }
 	virtual double getArea() const override
 	{
 		return _width * _height;
@@ -65,4 +79,19 @@ public:
 private:
 	double _width;
 	double _height;
+};
+
+/* Square ***********************************************************************************************/
+class Square : public Rectangle // Violent LSP
+{
+public:
+	virtual ~Square() noexcept {}
+	explicit Square(double w)
+	{
+		setw(w);
+		seth(w);
+	}
+
+	virtual void setw(double w) override { Rectangle::setw(w); Rectangle::seth(w); } // Work arround to fix LSP violent
+	virtual void seth(double h) override { Rectangle::setw(h); Rectangle::seth(h); } // Work arround to fix LSP violent
 };
