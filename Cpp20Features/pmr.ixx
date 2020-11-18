@@ -47,19 +47,22 @@ struct Foo {
 
 export void testMonotoicBuffer()
 {
-    constexpr size_t sz = 32;
+    constexpr size_t sz = 128;
+    constexpr size_t numElm = 14;
     std::byte mem[sz] = {};
     std::pmr::monotonic_buffer_resource alloc(&mem, sz);
 
     std::pmr::vector<Foo> vec(&alloc);
-    for (int i = 1; i < 3; ++i) {
+    vec.reserve(numElm); // IMPORTANT for performance
+
+    for (int i = 1; i < numElm + 1; ++i) {
         vec.emplace_back(i);
     }
 
     std::cout << "\nvalue from statck mem:\n";
     for (int i = 0; i < sz; i += sizeof(Foo)) {
         Foo* p = static_cast<Foo*>((void*)&mem[i]);
-        std::cout << &(p->x) << " #" << p->x << std::endl;
+        std::cout << &p->x << " #" << p->x << std::endl;
     }
 
     std::cout << "\nvalue from vector:\n";
