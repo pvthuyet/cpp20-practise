@@ -156,6 +156,7 @@
     <ClCompile Include="generator.ixx" />
     <ClCompile Include="resumable_thing.ixx" />
     <ClCompile Include="sfinae.ixx" />
+    <ClCompile Include="solid.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fibo\fibo.vcxproj">
