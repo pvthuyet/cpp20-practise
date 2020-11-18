@@ -70,7 +70,7 @@ struct Generator
 		}
 
 		auto initial_suspend() { return std::suspend_always{}; }
-		auto final_suspend() { return std::suspend_always{}; }
+		auto final_suspend() noexcept { return std::suspend_always{}; }
 		auto yield_value(T const& val)
 		{
 			_val = val;

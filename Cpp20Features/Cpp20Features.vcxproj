@@ -153,15 +153,11 @@
   <ItemGroup>
     <ClCompile Include="Cpp20Features.cpp" />
     <ClCompile Include="cppref_generator.ixx" />
-    <ClCompile Include="generator.ixx" />
-    <ClCompile Include="resumable_thing.ixx" />
+    <ClCompile Include="pmr.ixx" />
     <ClCompile Include="sfinae.ixx" />
     <ClCompile Include="solid.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fibo\fibo.vcxproj">
-      <Project>{0396f667-21d2-4e19-b382-220d3275f161}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Printer\Printer.vcxproj">
       <Project>{b7638627-5b43-4f3b-ae27-7700c9c3ad19}</Project>
     </ProjectReference>

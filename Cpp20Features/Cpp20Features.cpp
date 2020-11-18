@@ -11,102 +11,12 @@
 #include <exception>
 #include "printer_concepts.h"
 
-import FibCoroutines;
-import FibGenerator;
-import DefaultPrinter;
-import BetterPrinter;
-import ResumableThing;
-import Generator;
 import CpprefGenerator;
+import Fibo.Pmr;
 
 using namespace std;
 
 #define LOGINFO	cout << "[" << std::this_thread::get_id() << "] [" << __func__ << "] "
-
-struct DefaultFormat
-{
-	template<is_series S, is_printer T>
-	void format(T t, S s)
-	{
-		while (!s.done())
-		{
-			t.printElement(s.next());
-			t.printSeparator();
-		}
-		t.printEol();
-	}
-};
-
-template<typename S, 
-	typename T = DefaultPrinter, 
-	typename F = DefaultFormat> 
-	requires is_series_printer<T, S, F> void print(S& s)
-{
-	F{}.format(T{}, s);
-}
-
-ResumableThing counter()
-{
-	LOGINFO << "called\n";
-	for (unsigned i = 0;; ++i)
-	{
-		co_await std::suspend_always{};
-		LOGINFO << "resumed (#" << i << ")\n";
-	}
-}
-
-void testCounter()
-{
-	using namespace std::chrono_literals;
-	LOGINFO << "calling counter\n";
-	auto theCounter = counter();
-	LOGINFO << "resuming counter\n";
-	for (int i = 0; i < 5; ++i) 
-	{
-		theCounter.resume();
-		std::this_thread::sleep_for(1s);
-	}
-	LOGINFO << "done\n";
-}
-
-thread_local int thrVal = 0;
-ResumableThing nameCounter(std::string name)
-{
-	LOGINFO << "called\n";
-	for (unsigned i = 0;; ++i)
-	{
-		co_await std::suspend_always{};
-		LOGINFO << name << " resumed (#" << thrVal++ << ")\n";
-	}
-}
-
-void testNameCounter()
-{
-	using namespace std::chrono_literals;
-	auto counterA = nameCounter("A");
-	auto counterB = nameCounter("B");
-	counterA.resume();
-	counterB.resume();
-	std::this_thread::sleep_for(1s);
-	counterB.resume();
-	counterA.resume();
-}
-
-void testIntGenerator()
-{
-	for (int x : integers(1, 5)) {
-		LOGINFO << x << std::endl;
-	}
-}
-
-void testStringGenerator()
-{
-	int i = 0;
-	for (auto&& s : genStrings()) {
-		LOGINFO << s << std::endl;
-		if (++i == 5) break;
-	}
-}
 
 void testCpprefGenerator()
 {
@@ -158,14 +68,15 @@ int main()
 	//return testSfinae11();
 	//return testSfinaeCpp17();
 	//return testSfinaeCpp17Fold();
-	return testSfinaeCpp20();
+	//return testSfinaeCpp20();
 
 	LOGINFO << "Start\n";
 	try
 	{
 		//testIntGenerator();
 		//testStringGenerator();
-		testCpprefGenerator();
+		//testCpprefGenerator();
+		testMonotoicBuffer();
 	}
 	catch (std::exception const& ex)
 	{

@@ -29,7 +29,7 @@ export struct ResumableThing
 		}
 
 		auto initial_suspend() { return std::suspend_never{}; }
-		auto final_suspend() { return std::suspend_never{}; }
+		auto final_suspend() noexcept { return std::suspend_never{}; }
 
 		void return_void() {}	// called for a co_return with no argument
 								// or falling off the end of a coroutine

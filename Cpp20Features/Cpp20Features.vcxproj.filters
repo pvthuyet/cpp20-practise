@@ -18,12 +18,6 @@
     <ClCompile Include="Cpp20Features.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="resumable_thing.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="generator.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cppref_generator.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -31,6 +25,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="solid.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pmr.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
