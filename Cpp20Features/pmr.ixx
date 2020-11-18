@@ -29,14 +29,16 @@ struct Foo {
         return *this;
     }
 
-    Foo(Foo&& o) noexcept : x{ std::exchange(o.x, 0) }, y{ std::exchange(o.y,0) } {
+    Foo(Foo&& o) noexcept : 
+        x{ std::exchange(o.x, 0) }, 
+        y{ std::exchange(o.y,0) } {
         std::cout << "move ctor: " << x << std::endl;
     }
 
     Foo& operator=(Foo&& o) noexcept {
         if (this != &o) {
             x = std::exchange(o.x, 0);
-            x = std::exchange(o.y, 0);
+            y = std::exchange(o.y, 0);
             std::cout << "move operator\n";
         }
         return *this;
