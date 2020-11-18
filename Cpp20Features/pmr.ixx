@@ -67,5 +67,5 @@ export void testMonotoicBuffer()
 
     std::cout << "\nvalue from vector:\n";
     for (auto&& e : vec)
-        std::cout << &(e.x) << " #" << e.x << std::endl;
+        std::cout << &e.x << " #" << e.x << std::endl;
 }
