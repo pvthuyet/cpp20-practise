@@ -76,7 +76,8 @@ int main()
 		//testIntGenerator();
 		//testStringGenerator();
 		//testCpprefGenerator();
-		testMonotoicBuffer();
+		//testMonotoicBuffer();
+		testStringOnStack();
 	}
 	catch (std::exception const& ex)
 	{

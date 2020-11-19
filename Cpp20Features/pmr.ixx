@@ -69,3 +69,32 @@ export void testMonotoicBuffer()
     for (auto&& e : vec)
         std::cout << &e.x << " #" << e.x << std::endl;
 }
+
+#include <chrono>
+export void testStringOnStack()
+{
+    constexpr size_t sz = 128 * 1024;
+    std::string strOnHeap;
+    //strOnHeap.reserve(sz);
+    auto loops = sz - 16;
+
+    auto start = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < loops; ++i) {
+        strOnHeap += "a";
+    }
+    auto end = std::chrono::steady_clock::now();
+    std::cout << "String on Heap: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs\n";
+
+    std::byte mem[sz] = {};
+    std::pmr::monotonic_buffer_resource rsrc(&mem, sz);
+    std::pmr::string strOnStack(&rsrc);
+    //strOnStack.reserve(sz);
+
+    auto start2 = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < loops; ++i) {
+        strOnStack += "a";
+    }
+    auto end2 = std::chrono::steady_clock::now();
+    std::cout << "String on stack: " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << " µs\n";
+
+}
