@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Cpp20Features.cpp" />
     <ClCompile Include="cppref_generator.ixx" />
+    <ClCompile Include="MemoryTracker.ixx" />
     <ClCompile Include="pmr.ixx" />
     <ClCompile Include="sfinae.ixx" />
     <ClCompile Include="solid.ixx" />

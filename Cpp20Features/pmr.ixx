@@ -4,6 +4,9 @@ module;
 #include <iostream>
 #include <memory_resource>
 #include <vector>
+#include <string>
+
+import Fibo.MemoryTracker;
 
 export module Fibo.Pmr;
 
@@ -107,4 +110,29 @@ export void testStringOnStack()
     std::cout << "String on stack address 2: " << (void*)&strOnStack[0] << " cap: " << strOnStack.capacity() << std::endl;
 
     std::cout << "String on stack: " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << " µs\n";
+}
+
+export void TestMemoryTracker()
+{
+    fibo::MemoryTracker tracker{ "[Tracker 1]" };
+    std::pmr::monotonic_buffer_resource pool{ &tracker };
+    {
+        for (int i = 0; i < 5; ++i) {
+            std::pmr::vector<int> vec{ &pool };
+            int loops = 10;
+            //vec.reserve(loops);
+            for(int j = 0; j < loops; ++j)
+            vec.emplace_back(j);
+        }
+
+        std::cout << "--- not yet deallocate. Can re-use???\n";
+
+        for (int i = 0; i < 2; ++i) {
+            std::pmr::vector<int> vec{ &pool };
+            int loops = 10;
+            //vec.reserve(loops);
+            for (int j = 0; j < loops; ++j)
+                vec.emplace_back(j);
+        }
+    }
 }

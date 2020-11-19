@@ -30,6 +30,9 @@
     <ClCompile Include="pmr.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryTracker.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">
