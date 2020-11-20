@@ -98,9 +98,7 @@ export void monotonic_on_stack()
     std::cout << "address range: " << buf.data() << " - " << buf.data() + buf.size() << std::endl;
     {
         std::pmr::monotonic_buffer_resource pool{ buf.data(), buf.size() };
-        {
-            createVector(&pool, 3);
-        }
+        createVector(&pool, 3);
     }
 }
 
@@ -111,14 +109,12 @@ export void monotonic_unreusable()
     std::cout << "*********************************************\n";
  
     print("monotonic_buffer_resource");
+    
     std::pmr::monotonic_buffer_resource pool{};
-    {
-        createVector(&pool, 3);
-    }
+    createVector(&pool, 3);
     std::cout << "********* Can re-use ???? => NO\n";
-    {
-        createVector(&pool, 2);
-    }
+    createVector(&pool, 2);
+    
     print("~monotonic_buffer_resource");
 }
 
@@ -130,13 +126,11 @@ export void synchronized_reusable()
     std::cout << "*********************************************\n";
 
     print("synchronized_pool_resource");
+    
     std::pmr::synchronized_pool_resource pool{};
-    {
-        createVector(&pool, 3);
-    }
+    createVector(&pool, 3);
     std::cout << "********* Can re-use ???? => YES\n";
-    {
-        createVector(&pool, 2);
-    }
+    createVector(&pool, 2);
+    
     print("~synchronized_pool_resource");
 }
