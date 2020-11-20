@@ -3,19 +3,34 @@ module;
 #include <memory_resource>
 #include <string>
 #include <iostream>
+#include <atomic>
 
 export module Fibo.MemoryTracker;
 
 namespace fibo
 {
-	export class MemoryTracker : public std::pmr::memory_resource
+	class MemoryTracker : public std::pmr::memory_resource
 	{
 		void print(void* p, std::size_t bytes, std::size_t alignment, std::string_view msg)
 		{
-			static int spaces = 0;
-			auto loop = (msg.at(0) == '~') ? --spaces : spaces++;
+			static std::atomic_size_t totalMem = 0;
+			static std::atomic_int spaces = 0;
+			int loop = spaces;
+			if (msg.at(0) == '~') {
+				loop = --spaces;
+				totalMem.fetch_sub(bytes);
+			}
+			else {
+				loop = spaces++;
+				totalMem.fetch_add(bytes);
+			}
+
 			for (int i = 0; i < loop; ++i) std::cout << "  ";
-			std::cout << "[" << msg << "] " << p << ", " << bytes << " bytes, align: " << alignment << std::endl << std::flush;
+			std::cout << "[" << msg << "] " 
+				<< p << ", " 
+				<< bytes << " bytes, align: " << alignment 
+				<< "\tmem used: " << totalMem << " bytes"
+				<< std::endl << std::flush;
 		}
 
 	private:
@@ -40,4 +55,10 @@ namespace fibo
 	private:
 		std::pmr::memory_resource* mUpperStream{ std::pmr::get_default_resource() };
 	};
+
+	export std::pmr::memory_resource* getTrackerMemoryResource()
+	{
+		static fibo::MemoryTracker tracker{};
+		return &tracker;
+	}
 }

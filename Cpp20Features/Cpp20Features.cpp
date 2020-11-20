@@ -9,10 +9,12 @@
 #include <chrono>
 #include <random>
 #include <exception>
+#include <memory_resource>
 #include "printer_concepts.h"
 
 import CpprefGenerator;
 import Fibo.Pmr;
+import Fibo.MemoryTracker;
 
 using namespace std;
 
@@ -65,6 +67,7 @@ int testSfinaeCpp20()
 
 int main()
 {
+	std::pmr::set_default_resource(fibo::getTrackerMemoryResource());
 	//return testSfinae11();
 	//return testSfinaeCpp17();
 	//return testSfinaeCpp17Fold();
@@ -78,8 +81,8 @@ int main()
 		//testCpprefGenerator();
 		//testMonotoicBuffer();
 		//testStringOnStack();
-		testMemoryMonotonic();
-		testMemorySynchronized();
+		monotonic_unreusable();
+		synchronized_reusable();
 	}
 	catch (std::exception const& ex)
 	{
