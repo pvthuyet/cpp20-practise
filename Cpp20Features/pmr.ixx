@@ -173,6 +173,21 @@ export void TestMemoryDestroy()
             }
             print("vector", false);
         }
+        std::cout << "Can re-use ???? => OK\n";
+        {
+            print("vector");
+            std::pmr::vector<int> vec{ &pool };
+            {
+                print("emplace_back");
+                vec.emplace_back(1);
+                print("emplace_back", false);
+
+                print("clear");
+                vec.clear();
+                print("clear", false);
+            }
+            print("vector", false);
+        }
         print("synchronized_pool_resource", false);
     }
     print("MemoryTracker", false);
