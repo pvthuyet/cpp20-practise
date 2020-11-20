@@ -112,19 +112,12 @@ export void testStringOnStack()
     std::cout << "String on stack: " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << " µs\n";
 }
 
-void print(std::string_view msg, bool enter = true)
+void print(std::string_view msg)
 {
     static int numspc = 0;
-    if (enter) {
-        for (int i = 0; i < numspc; ++i) std::cout << ' ';
-        std::cout << msg << std::endl;
-        numspc++;
-    }
-    else {
-        numspc--;
-        for (int i = 0; i < numspc; ++i) std::cout << ' ';
-        std::cout << "~" << msg << std::endl;
-    }
+    auto loop = (msg.at(0) == '~') ? --numspc : numspc++;
+    for (int i = 0; i < loop; ++i) std::cout << "  ";
+    std::cout << msg << std::endl << std::flush;
 }
 
 export void testMemoryMonotonic()
@@ -143,13 +136,13 @@ export void testMemoryMonotonic()
             {
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
-                print("emplace_back", false);
+                print("~emplace_back");
 
                 print("clear");
                 vec.clear();
-                print("clear", false);
+                print("~clear");
             }
-            print("vector", false);
+            print("~vector");
         }
         std::cout << "Can re-use ???? => NO\n";
         {
@@ -158,17 +151,17 @@ export void testMemoryMonotonic()
             {
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
-                print("emplace_back", false);
+                print("~emplace_back");
 
                 print("clear");
                 vec.clear();
-                print("clear", false);
+                print("~clear");
             }
-            print("vector", false);
+            print("~vector");
         }
-        print("monotonic_buffer_resource", false);
+        print("~monotonic_buffer_resource");
     }
-    print("MemoryTracker", false);
+    print("~MemoryTracker");
 }
 
 export void testMemorySynchronized()
@@ -187,13 +180,13 @@ export void testMemorySynchronized()
             {
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
-                print("emplace_back", false);
+                print("~emplace_back");
 
                 print("clear");
                 vec.clear();
-                print("clear", false);
+                print("~clear");
             }
-            print("vector", false);
+            print("~vector");
         }
         std::cout << "Can re-use ???? => OK\n";
         {
@@ -202,15 +195,15 @@ export void testMemorySynchronized()
             {
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
-                print("emplace_back", false);
+                print("~emplace_back");
 
                 print("clear");
                 vec.clear();
-                print("clear", false);
+                print("~clear");
             }
-            print("vector", false);
+            print("~vector");
         }
-        print("synchronized_pool_resource", false);
+        print("~synchronized_pool_resource");
     }
-    print("MemoryTracker", false);
+    print("~MemoryTracker");
 }

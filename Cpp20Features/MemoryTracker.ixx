@@ -10,32 +10,25 @@ namespace fibo
 {
 	export class MemoryTracker : public std::pmr::memory_resource
 	{
-		void print(void* p, std::size_t bytes, std::size_t alignment, bool alloc = true)
+		void print(void* p, std::size_t bytes, std::size_t alignment, std::string_view msg)
 		{
 			static int spaces = 0;
-			if (alloc) {
-				for (int i = 0; i < spaces; ++i) std::cout << ' ';
-				std::cout << "[alloc] " << p << ", " << bytes << " bytes, align: " << alignment << '\n';
-				spaces++;
-			}
-			else {
-				spaces--;
-				for (int i = 0; i < spaces; ++i) std::cout << ' ';
-				std::cout << "[~alloc] " << p << ", " << bytes << " bytes, align: " << alignment << '\n';
-			}
+			auto loop = (msg.at(0) == '~') ? --spaces : spaces++;
+			for (int i = 0; i < loop; ++i) std::cout << "  ";
+			std::cout << "[" << msg << "] " << p << ", " << bytes << " bytes, align: " << alignment << std::endl << std::flush;
 		}
 
 	private:
 		virtual void* do_allocate(std::size_t bytes, std::size_t align) override
 		{
 			auto p = mUpperStream->allocate(bytes, align);
-			print(p, bytes, align);
+			print(p, bytes, align, "alloc");
 			return p;
 		}
 
 		virtual void do_deallocate(void*p, std::size_t bytes, std::size_t align) override
 		{
-			print(p, bytes, align, false);
+			print(p, bytes, align, "~alloc");
 			mUpperStream->deallocate(p, bytes, align);
 		}
 
