@@ -136,3 +136,44 @@ export void TestMemoryTracker()
         }
     }
 }
+
+void print(std::string_view msg, bool enter = true)
+{
+    static int numspc = 0;
+    if (enter) {
+        for (int i = 0; i < numspc; ++i) std::cout << ' ';
+        std::cout << msg << std::endl;
+        numspc++;
+    }
+    else {
+        numspc--;
+        for (int i = 0; i < numspc; ++i) std::cout << ' ';
+        std::cout << "~" << msg << std::endl;
+    }
+}
+
+export void TestMemoryDestroy()
+{
+    print("MemoryTracker");
+    fibo::MemoryTracker tracker{};
+    {
+        print("synchronized_pool_resource");
+        std::pmr::synchronized_pool_resource pool{ &tracker };
+        {
+            print("vector");
+            std::pmr::vector<int> vec{ &pool };
+            {
+                print("emplace_back");
+                vec.emplace_back(1);
+                print("emplace_back", false);
+
+                print("clear");
+                vec.clear();
+                print("clear", false);
+            }
+            print("vector", false);
+        }
+        print("synchronized_pool_resource", false);
+    }
+    print("MemoryTracker", false);
+}

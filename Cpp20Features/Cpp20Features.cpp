@@ -78,7 +78,8 @@ int main()
 		//testCpprefGenerator();
 		//testMonotoicBuffer();
 		//testStringOnStack();
-		TestMemoryTracker();
+		//TestMemoryTracker();
+		TestMemoryDestroy();
 	}
 	catch (std::exception const& ex)
 	{
