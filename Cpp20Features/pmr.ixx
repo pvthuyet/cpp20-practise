@@ -112,31 +112,6 @@ export void testStringOnStack()
     std::cout << "String on stack: " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << " µs\n";
 }
 
-export void TestMemoryTracker()
-{
-    fibo::MemoryTracker tracker{ "[Tracker 1]" };
-    std::pmr::monotonic_buffer_resource pool{ &tracker };
-    {
-        for (int i = 0; i < 5; ++i) {
-            std::pmr::vector<int> vec{ &pool };
-            int loops = 10;
-            //vec.reserve(loops);
-            for(int j = 0; j < loops; ++j)
-            vec.emplace_back(j);
-        }
-
-        std::cout << "--- not yet deallocate. Can re-use???\n";
-
-        for (int i = 0; i < 2; ++i) {
-            std::pmr::vector<int> vec{ &pool };
-            int loops = 10;
-            //vec.reserve(loops);
-            for (int j = 0; j < loops; ++j)
-                vec.emplace_back(j);
-        }
-    }
-}
-
 void print(std::string_view msg, bool enter = true)
 {
     static int numspc = 0;
@@ -152,8 +127,55 @@ void print(std::string_view msg, bool enter = true)
     }
 }
 
-export void TestMemoryDestroy()
+export void testMemoryMonotonic()
 {
+    std::cout << "\n\n*********************************************\n";
+    std::cout << "* monotoic buffer resource                  *\n";
+    std::cout << "*********************************************\n";
+    print("MemoryTracker");
+    fibo::MemoryTracker tracker{};
+    {
+        print("monotonic_buffer_resource");
+        std::pmr::monotonic_buffer_resource pool{ &tracker };
+        {
+            print("vector");
+            std::pmr::vector<std::pmr::string> vec{ &pool };
+            {
+                print("emplace_back");
+                vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
+                print("emplace_back", false);
+
+                print("clear");
+                vec.clear();
+                print("clear", false);
+            }
+            print("vector", false);
+        }
+        std::cout << "Can re-use ???? => NO\n";
+        {
+            print("vector");
+            std::pmr::vector<std::pmr::string> vec{ &pool };
+            {
+                print("emplace_back");
+                vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
+                print("emplace_back", false);
+
+                print("clear");
+                vec.clear();
+                print("clear", false);
+            }
+            print("vector", false);
+        }
+        print("monotonic_buffer_resource", false);
+    }
+    print("MemoryTracker", false);
+}
+
+export void testMemorySynchronized()
+{
+    std::cout << "\n\n*********************************************\n";
+    std::cout << "* synchronized pool resource                *\n";
+    std::cout << "*********************************************\n";
     print("MemoryTracker");
     fibo::MemoryTracker tracker{};
     {
@@ -161,10 +183,10 @@ export void TestMemoryDestroy()
         std::pmr::synchronized_pool_resource pool{ &tracker };
         {
             print("vector");
-            std::pmr::vector<int> vec{ &pool };
+            std::pmr::vector<std::pmr::string> vec{ &pool };
             {
                 print("emplace_back");
-                vec.emplace_back(1);
+                vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
                 print("emplace_back", false);
 
                 print("clear");
@@ -176,10 +198,10 @@ export void TestMemoryDestroy()
         std::cout << "Can re-use ???? => OK\n";
         {
             print("vector");
-            std::pmr::vector<int> vec{ &pool };
+            std::pmr::vector<std::pmr::string> vec{ &pool };
             {
                 print("emplace_back");
-                vec.emplace_back(1);
+                vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
                 print("emplace_back", false);
 
                 print("clear");

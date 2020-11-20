@@ -25,13 +25,6 @@ namespace fibo
 			}
 		}
 
-	public:
-		MemoryTracker() = default;
-		explicit MemoryTracker(std::pmr::string const& prefix, 
-			std::pmr::memory_resource* upper = std::pmr::get_default_resource()) :
-			mUpperStream{upper}
-		{}
-
 	private:
 		virtual void* do_allocate(std::size_t bytes, std::size_t align) override
 		{
@@ -48,10 +41,7 @@ namespace fibo
 
 		virtual bool do_is_equal(std::pmr::memory_resource const& other) const noexcept override
 		{
-			if (this == &other) {
-				return true;
-			}
-			return false;
+			return this == &other;
 		}
 
 	private:
