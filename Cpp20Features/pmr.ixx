@@ -6,6 +6,7 @@ module;
 #include <vector>
 #include <string>
 #include <chrono>
+#include <array>
 
 import Fibo.MemoryTracker;
 
@@ -21,14 +22,19 @@ void print(std::string_view msg)
 
 struct Foo 
 {
-private:
+public:
     int mId{};
-    std::pmr::string mName;
+    std::string mName;
 
 public:
     Foo() noexcept 
     {
         //std::cout << "default ctor " << this << std::endl;
+    }
+
+    ~Foo() noexcept
+    {
+        //std::cout << "~Foo " << this << std::endl;
     }
 
     template<typename T>
@@ -70,8 +76,32 @@ public:
     }
 };
 
-export void testMonotoicBuffer()
+void createVector(std::pmr::memory_resource* pool, int numElm)
 {
+    print("vector");
+    std::pmr::vector<Foo> vec{ pool };
+    vec.reserve(numElm);
+    for (int i = 0; i < numElm; ++i) {
+        print("emplace_back");
+        vec.emplace_back(i + 1, "The string should be big enought to avoid the SSO");
+        print("~emplace_back");
+    }
+    print("~vector");
+}
+
+export void monotonic_on_stack()
+{
+    std::cout << "\n\n*********************************************\n";
+    std::cout << "* monotoic buffer resource on stack         *\n";
+    std::cout << "*********************************************\n";
+    std::array<std::byte, 10 * 1024> buf{};
+    std::cout << "address range: " << buf.data() << " - " << buf.data() + buf.size() << std::endl;
+    {
+        std::pmr::monotonic_buffer_resource pool{ buf.data(), buf.size() };
+        {
+            createVector(&pool, 3);
+        }
+    }
 }
 
 export void monotonic_unreusable()
@@ -83,32 +113,11 @@ export void monotonic_unreusable()
     print("monotonic_buffer_resource");
     std::pmr::monotonic_buffer_resource pool{};
     {
-        {
-            print("vector");
-            std::pmr::vector<Foo> vec{ &pool };
-            vec.reserve(2);
-            {
-                print("emplace_back");
-                vec.emplace_back(1, "The string should be big enought to avoid the SSO");
-                vec.emplace_back(2, "The string should be big enought to avoid the SSO");
-                print("~emplace_back");
-            }
-            print("~vector");
-        }
+        createVector(&pool, 3);
     }
-    std::cout << "Can re-use ???? => NO\n";
+    std::cout << "********* Can re-use ???? => NO\n";
     {
-        {
-            print("vector");
-            std::pmr::vector<Foo> vec{ &pool };
-            vec.reserve(1);
-            {
-                print("emplace_back");
-                vec.emplace_back(3, "The string should be big enought to avoid the SSO");
-                print("~emplace_back");
-            }
-            print("~vector");
-        }
+        createVector(&pool, 2);
     }
     print("~monotonic_buffer_resource");
 }
@@ -123,32 +132,11 @@ export void synchronized_reusable()
     print("synchronized_pool_resource");
     std::pmr::synchronized_pool_resource pool{};
     {
-        {
-            print("vector");
-            std::pmr::vector<Foo> vec{ &pool };
-            vec.reserve(2);
-            {
-                print("emplace_back");
-                vec.emplace_back(1, "The string should be big enought to avoid the SSO");
-                vec.emplace_back(2, "The string should be big enought to avoid the SSO");
-                print("~emplace_back");
-            }
-            print("~vector");
-        }
+        createVector(&pool, 3);
     }
-    std::cout << "Can re-use ???? => YES\n";
+    std::cout << "********* Can re-use ???? => YES\n";
     {
-        {
-            print("vector");
-            std::pmr::vector<Foo> vec{ &pool };
-            vec.reserve(1);
-            {
-                print("emplace_back");
-                vec.emplace_back(3, "The string should be big enought to avoid the SSO");
-                print("~emplace_back");
-            }
-            print("~vector");
-        }
+        createVector(&pool, 2);
     }
     print("~synchronized_pool_resource");
 }

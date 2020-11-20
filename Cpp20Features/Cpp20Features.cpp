@@ -80,7 +80,7 @@ int main()
 		//testStringGenerator();
 		//testCpprefGenerator();
 		//testMonotoicBuffer();
-		//testStringOnStack();
+		//monotonic_on_stack();
 		monotonic_unreusable();
 		synchronized_reusable();
 	}
