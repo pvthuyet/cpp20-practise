@@ -137,10 +137,6 @@ export void testMemoryMonotonic()
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
                 print("~emplace_back");
-
-                print("clear");
-                vec.clear();
-                print("~clear");
             }
             print("~vector");
         }
@@ -152,10 +148,6 @@ export void testMemoryMonotonic()
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
                 print("~emplace_back");
-
-                print("clear");
-                vec.clear();
-                print("~clear");
             }
             print("~vector");
         }
@@ -181,10 +173,6 @@ export void testMemorySynchronized()
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
                 print("~emplace_back");
-
-                print("clear");
-                vec.clear();
-                print("~clear");
             }
             print("~vector");
         }
@@ -196,10 +184,6 @@ export void testMemorySynchronized()
                 print("emplace_back");
                 vec.emplace_back("The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO. The string should be big enought to avoid the SSO");
                 print("~emplace_back");
-
-                print("clear");
-                vec.clear();
-                print("~clear");
             }
             print("~vector");
         }
