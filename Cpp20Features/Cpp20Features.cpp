@@ -79,8 +79,7 @@ int main()
 		//testIntGenerator();
 		//testStringGenerator();
 		//testCpprefGenerator();
-		//testMonotoicBuffer();
-		//monotonic_on_stack();
+		monotonic_on_stack();
 		monotonic_unreusable();
 		synchronized_reusable();
 	}

@@ -20,45 +20,33 @@ void print(std::string_view msg)
     std::cout << msg << std::endl << std::flush;
 }
 
-struct Foo 
+class Foo 
 {
 public:
-    int mId{};
-    std::string mName;
+    int mId;
+    std::pmr::string mName;
+    using allocator_type = decltype(mName)::allocator_type;
 
 public:
-    Foo() noexcept 
+    explicit Foo(allocator_type alloc = {}) noexcept(std::is_nothrow_default_constructible_v<std::pmr::string>) :
+        mId {0},
+        mName{alloc}
     {
-        //std::cout << "default ctor " << this << std::endl;
     }
 
-    ~Foo() noexcept
+    Foo(std::string_view name, allocator_type alloc = {}) :
+        mId{ 0 },
+        mName(name, alloc)
     {
-        //std::cout << "~Foo " << this << std::endl;
     }
 
-    template<typename T>
-    Foo(int id, T&& name) noexcept :
-        mId{ id },
-        mName(std::forward<T>(name))
+    Foo(Foo const& o, allocator_type alloc) :
+        mId{ o.mId }, 
+        mName{ o.mName, alloc }
     {
-        //std::cout << "ctor with argument " << this << std::endl;
     }
 
-    Foo(Foo const& o) : mId{ o.mId }, mName{ o.mName }
-    {
-        //std::cout << "copy ctor " << this << " <= " << &o << std::endl;
-    }
-
-    Foo& operator=(Foo const& o) 
-    {
-        //std::cout << "copy operator " << this << " <= " << &o << std::endl;
-        Foo tmp(o);
-        *this = std::move(tmp);
-        return *this;
-    }
-
-    Foo(Foo&& o) noexcept : 
+    Foo(Foo&& o, allocator_type alloc) :
         mId{ o.mId },
         mName{ std::exchange(o.mName, std::pmr::string{}) }
     {
