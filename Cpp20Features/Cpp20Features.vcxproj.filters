@@ -36,6 +36,12 @@
     <ClCompile Include="address_helper.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pmr2.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pmr_utils.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">

@@ -1,6 +1,7 @@
 // Cpp20Features.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include <vld.h>
 #include <iostream>
 #include <ranges>
 #include <future>
@@ -14,6 +15,7 @@
 
 import CpprefGenerator;
 import Fibo.Pmr;
+import Fibo.Pmr2;
 import Fibo.MemoryTracker;
 
 using namespace std;
@@ -79,9 +81,11 @@ int main()
 		//testIntGenerator();
 		//testStringGenerator();
 		//testCpprefGenerator();
-		monotonic_on_stack();
-		monotonic_unreusable();
-		synchronized_reusable();
+		//monotonic_on_stack();
+		//monotonic_unreusable();
+		//synchronized_reusable();
+
+		fibo::pmr2::testPmr2();
 	}
 	catch (std::exception const& ex)
 	{
