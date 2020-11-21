@@ -4,6 +4,8 @@ module;
 #include <string>
 #include <atomic>
 #include <iostream>
+#include <thread>
+#include <functional>
 #include "fmt/core.h"
 #include "fmt/color.h"
 
@@ -11,6 +13,14 @@ export module Fibo.MemoryTracker;
 
 namespace fibo
 {
+	std::size_t getThreadId() 
+	{
+		static std::atomic<std::size_t> threadIndex{ 0 };
+		thread_local std::size_t id = threadIndex;
+		threadIndex++;
+		return id;
+	}
+
 	class MemoryTracker final: public std::pmr::memory_resource
 	{
 		void print(void* p, std::size_t bytes, std::size_t align, std::string_view msg)
@@ -31,9 +41,10 @@ namespace fibo
 			}
 
 			fmt::print(fmt::fg(clr) | fmt::emphasis::italic,
-				"{:>{}}[{}] {} - {} - {}\n", 
+				"{:>{}}[#{}] {} {} - {} - {}\n", 
 				' ', 
 				indents * 2,
+				getThreadId(),
 				msg, 
 				bytes, 
 				align, 
