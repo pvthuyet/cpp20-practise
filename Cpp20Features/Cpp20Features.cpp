@@ -79,10 +79,9 @@ int main()
 		//testIntGenerator();
 		//testStringGenerator();
 		//testCpprefGenerator();
-		//monotonic_on_stack();
-		//monotonic_unreusable();
-		//synchronized_reusable();
-		testFoo();
+		monotonic_on_stack();
+		monotonic_unreusable();
+		synchronized_reusable();
 	}
 	catch (std::exception const& ex)
 	{

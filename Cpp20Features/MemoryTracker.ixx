@@ -41,11 +41,12 @@ namespace fibo
 			}
 
 			fmt::print(fmt::fg(clr) | fmt::emphasis::italic,
-				"{:>{}}[thread {}] {} {} - {} - {}\n", 
+				"{:>{}}[thread {}] [{}] {} - {} - {} - {}\n", 
 				' ', 
 				indents * 2,
 				getThreadId(),
-				msg, 
+				msg,
+				fmt::ptr(p),
 				bytes, 
 				align, 
 				total);
