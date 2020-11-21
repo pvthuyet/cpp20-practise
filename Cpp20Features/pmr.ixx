@@ -7,6 +7,7 @@ module;
 #include <string>
 #include <chrono>
 #include <array>
+#include <thread>
 #include "fmt/core.h"
 #include "fmt/color.h"
 
@@ -68,6 +69,11 @@ export void testFoo()
     std::pmr::string s1{ "abcdadfadafadadfadfadfdfadfadf" };
     std::pmr::string s2{ "abcdadfadafadadfadfadfdfadfadf" };
     std::pmr::string s3{ "abcdadfadafadadfadfadfdfadfadf" };
+    std::thread t([]() {
+        std::pmr::string s1{ "abcdadfadafadadfadfadfdfadfadf" };
+        });
+    t.join();
+
    // char ch[] = "hello world";
     //fmt::print("{:>{}} {}", " ", 10, "hello");
     return;

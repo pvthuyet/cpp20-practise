@@ -41,7 +41,7 @@ namespace fibo
 			}
 
 			fmt::print(fmt::fg(clr) | fmt::emphasis::italic,
-				"{:>{}}[#{}] {} {} - {} - {}\n", 
+				"{:>{}}[thread {}] {} {} - {} - {}\n", 
 				' ', 
 				indents * 2,
 				getThreadId(),
