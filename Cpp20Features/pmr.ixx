@@ -54,7 +54,7 @@ public:
     {
     }
 
-    Foo(Foo&&) = default;
+    Foo(Foo&&) noexcept = default;
     Foo(Foo&& other, allocator_type alloc) :
         mId{other.mId},
         mName{std::move(other.mName), alloc}
@@ -62,9 +62,9 @@ public:
     }
 
     // Rule of 6
-    ~Foo() = default;
+    ~Foo() noexcept = default;
     Foo& operator=(Foo const&) = default;
-    Foo& operator=(Foo&&) = default;
+    Foo& operator=(Foo&&) noexcept = default;
 };
 
 void createVector(std::pmr::memory_resource* pool, int numElm, long long poolAddr = 0)
@@ -79,7 +79,7 @@ void createVector(std::pmr::memory_resource* pool, int numElm, long long poolAdd
     }
 
     long long lastObj = (long long)(&vec[numElm - 1].mName[0]);
-    fmt::print("Last obj address: {} - dist: {}\n",
+    fmt::print("Last obj address: {} - dist to pool: {}\n",
         fmt::ptr(&vec[numElm-1].mName[0]),
         lastObj - poolAddr);
 
