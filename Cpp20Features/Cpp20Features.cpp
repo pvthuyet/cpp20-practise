@@ -73,21 +73,22 @@ int main()
 	//return testSfinaeCpp17Fold();
 	//return testSfinaeCpp20();
 
-	LOGINFO << "Start\n";
+	//LOGINFO << "Start\n";
 	try
 	{
 		//testIntGenerator();
 		//testStringGenerator();
 		//testCpprefGenerator();
-		monotonic_on_stack();
-		monotonic_unreusable();
-		synchronized_reusable();
+		//monotonic_on_stack();
+		//monotonic_unreusable();
+		//synchronized_reusable();
+		testFoo();
 	}
 	catch (std::exception const& ex)
 	{
 		LOGINFO << ex.what() << '\n';
 	}
-	LOGINFO << "End\n";
+	//LOGINFO << "End\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

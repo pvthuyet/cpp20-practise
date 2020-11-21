@@ -7,8 +7,11 @@ module;
 #include <string>
 #include <chrono>
 #include <array>
+#include "fmt/core.h"
+#include "fmt/color.h"
 
 import Fibo.MemoryTracker;
+import Fibo.AddressHelper;
 
 export module Fibo.Pmr;
 
@@ -40,30 +43,61 @@ public:
     {
     }
 
+    Foo(Foo const&) = default;
     Foo(Foo const& o, allocator_type alloc) :
         mId{ o.mId }, 
         mName{ o.mName, alloc }
     {
     }
 
-    Foo(Foo&& o, allocator_type alloc) :
-        mId{ o.mId },
-        mName{ std::exchange(o.mName, std::pmr::string{}) }
+    Foo(Foo&&) = default;
+    Foo(Foo&& other, allocator_type alloc) :
+        mId{other.mId},
+        mName{std::move(other.mName), alloc}
     {
-        //std::cout << "move ctor " << this << " <= " << &o << std::endl;
     }
 
-    Foo& operator=(Foo&& o) noexcept 
-    {
-        if (this != &o) {
-            mId = o.mId;
-            mName = std::exchange(o.mName, std::pmr::string{});
-            //std::cout << "move operator " << this << " <= " << &o << std::endl;
-        }
-        return *this;
-    }
+    // Rule of 6
+    ~Foo() = default;
+    Foo& operator=(Foo const&) = default;
+    Foo& operator=(Foo&&) = default;
 };
 
+export void testFoo()
+{
+    std::pmr::string s1{ "abcdadfadafadadfadfadfdfadfadf" };
+    std::pmr::string s2{ "abcdadfadafadadfadfadfdfadfadf" };
+    std::pmr::string s3{ "abcdadfadafadadfadfadfdfadfadf" };
+   // char ch[] = "hello world";
+    //fmt::print("{:>{}} {}", " ", 10, "hello");
+    return;
+
+    std::array<std::byte, 10 * 1024> buf{};
+    std::cout << "address range: " << buf.data() << " - " << (buf.data() + buf.size()) << std::endl;
+    std::pmr::monotonic_buffer_resource pool{ buf.data(), buf.size() };
+    fmt::print(fmt::fg(fmt::color::white),
+        "pool address: {} - {}\n", 
+        fmt::ptr(buf.data()),
+        fmt::ptr(buf.data() + buf.size()));
+
+    Foo fo1("abcxxxxxxxxxxxxxxxxxxxxxxx", &pool);
+    fmt::print("Obj address: {} - dist: {}\n", 
+        fmt::ptr(&fo1.mName[0]), 
+        fibo::AddressHelper::diff(fo1.mName[0], buf[0]));
+
+    Foo fo2 = fo1;
+    fmt::print("Obj address: {} - dist: {}\n",
+        fmt::ptr(&fo2.mName[0]),
+        fibo::AddressHelper::diff(fo2.mName[0], buf[0]));
+
+    Foo fo3(fo1, &pool);
+    fmt::print("Obj address: {} - dist: {}\n",
+        fmt::ptr(&fo3.mName[0]),
+        fibo::AddressHelper::diff(fo3.mName[0], buf[0]));
+   
+}
+
+/*
 void createVector(std::pmr::memory_resource* pool, int numElm)
 {
     print("vector");
@@ -122,3 +156,4 @@ export void synchronized_reusable()
     
     print("~synchronized_pool_resource");
 }
+*/
