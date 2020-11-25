@@ -17,6 +17,7 @@ import CpprefGenerator;
 import Fibo.Pmr;
 import Fibo.Pmr2;
 import Fibo.MemoryTracker;
+import range_exam;
 
 using namespace std;
 
@@ -85,7 +86,11 @@ int main()
 		//monotonic_unreusable();
 		//synchronized_reusable();
 
-		fibo::pmr2::testPmr2();
+		//fibo::pmr2::testPmr2();
+
+		// ranges **********************
+		fibo::ranges::exam1();
+
 	}
 	catch (std::exception const& ex)
 	{
