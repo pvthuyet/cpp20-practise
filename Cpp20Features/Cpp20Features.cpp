@@ -11,6 +11,9 @@
 #include <random>
 #include <exception>
 #include <memory_resource>
+#include <queue>
+#include <ranges>
+#include <algorithm>
 #include "printer_concepts.h"
 
 import CpprefGenerator;
@@ -66,6 +69,57 @@ int testSfinaeCpp20()
 	std::cout << sum << std::endl;
 	return 0;
 }
+
+
+
+std::vector<std::string> split1(std::string_view s)
+{
+	constexpr char delimiter = ' ';
+	std::vector<std::string> result;
+	auto num = std::ranges::count(s, delimiter); // still bad
+	result.reserve(num + 1);
+	size_t pos = 0;
+	size_t spos = 0;
+	while ((pos = s.find(delimiter, spos)) != std::string::npos) {
+		result.emplace_back(s.substr(spos, pos - spos));
+		spos = pos + 1;
+	}
+
+	auto len = s.length();
+	if (spos < len - 1) {
+		result.emplace_back(s.substr(spos, len - spos));
+	}
+	return result;
+}
+
+std::vector<std::string> split2(std::string_view s)
+{
+	std::queue<std::string> que;
+	constexpr char delimiter = ' ';
+	size_t pos = 0;
+	size_t spos = 0;
+	while ((pos = s.find(delimiter, spos)) != std::string::npos) {
+		que.emplace(s.substr(spos, pos - spos));
+		spos = pos + 1;
+	}
+
+	auto len = s.length();
+	if (spos < len - 1) {
+		que.emplace(s.substr(spos, len - spos));
+	}
+
+	std::vector<std::string> result;
+	result.reserve(que.size());
+	while (que.size() > 0) {
+		result.push_back(std::move(que.front()));
+		que.pop();
+	}
+
+	return result;
+}
+
+#include <numeric>
+#include <iterator>
 
 int main()
 {
