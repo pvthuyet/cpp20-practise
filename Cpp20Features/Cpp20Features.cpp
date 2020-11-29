@@ -14,6 +14,9 @@
 #include <queue>
 #include <ranges>
 #include <algorithm>
+#include <map>
+#include <numeric>
+#include <iterator>
 #include "printer_concepts.h"
 
 import CpprefGenerator;
@@ -118,9 +121,6 @@ std::vector<std::string> split2(std::string_view s)
 
 	return result;
 }
-
-#include <numeric>
-#include <iterator>
 
 int main()
 {

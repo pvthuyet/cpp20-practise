@@ -45,6 +45,9 @@
     <ClCompile Include="range_exam.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="coro.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">
