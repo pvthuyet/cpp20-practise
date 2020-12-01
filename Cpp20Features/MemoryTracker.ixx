@@ -6,6 +6,8 @@ module;
 #include <iostream>
 #include <thread>
 #include <functional>
+#include <charconv>
+#include <sstream>
 #include "fmt/core.h"
 #include "fmt/color.h"
 
@@ -13,13 +15,23 @@ export module Fibo.MemoryTracker;
 
 namespace fibo
 {
-	std::size_t getThreadId() 
+	std::size_t getCurrrentThreadId() 
 	{
-		static std::atomic<std::size_t> threadIndex{ 0 };
-		thread_local std::size_t id = threadIndex;
-		threadIndex++;
-		return id;
-	}
+		try {
+			std::ostringstream oss;
+			oss << std::this_thread::get_id();
+			size_t id{};
+			auto str = oss.str();
+			auto first = str.data();
+			auto last = first + str.size();
+			auto [p, ec] = std::from_chars(first, last, id);
+			return id;
+		}
+		catch (std::exception const& ex) {
+			_ASSERT(false);
+		}
+		return 0;
+	}	
 
 	class MemoryTracker final: public std::pmr::memory_resource
 	{
@@ -44,7 +56,7 @@ namespace fibo
 				"{:>{}}[thread {}] [{}] {} - {} - {} - {}\n", 
 				' ', 
 				indents * 2,
-				getThreadId(),
+				getCurrrentThreadId(),
 				msg,
 				fmt::ptr(p),
 				bytes, 

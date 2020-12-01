@@ -6,8 +6,14 @@
 #include <random>
 #include <stdexcept>
 #include <utility>
+#include <thread>
+#include <iostream>
+#include <experimental/generator>
+#include <array>
 
 export module CpprefGenerator;
+
+#define LOGINFO	(std::cout << "[" << std::this_thread::get_id() << "] ")
 
 namespace cppref
 {
@@ -117,12 +123,10 @@ namespace cppref
 		Handle m_coroutine = nullptr;
 	};
 	//===================================================================================================================
-}
 
-export namespace cppref
-{
-	template<std::integral T>
-	Generator<T> range(T first, T last)
+
+	export template<std::integral T>
+	Generator<T> generator_number(T first, T last)
 	{
 		while (first <= last)
 		{
@@ -132,17 +136,17 @@ export namespace cppref
 
 	template<class T>
 	concept TString = std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring>;
-	template<TString T>
-	Generator<T> range(unsigned len)
-	{
-		constexpr const char alphabet[] =
-		{ '0','1','2','3','4','5','6','7','8','9',
-		  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-		  'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
 
+	
+	constexpr const std::array<char, 62> alphabet { '0','1','2','3','4','5','6','7','8','9',
+	  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+	  'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
+
+	export Generator<std::string> generator_string(unsigned len)
+	{
 		unsigned int seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
 		std::default_random_engine gen(seed);
-		std::uniform_int_distribution<unsigned> dis(0, sizeof(alphabet) - 1);
+		std::uniform_int_distribution<unsigned> dis(0, alphabet.size() - 1);
 		std::string s(len, 0);
 
 		for (;;)
@@ -150,7 +154,27 @@ export namespace cppref
 			for (unsigned i = 0; i < len; ++i) {
 				s[i] = alphabet[dis(gen)];
 			}
+			LOGINFO << "generator_string generating....\n";
 			co_yield s;
 		}
+		co_return;
+	}
+
+	export std::experimental::generator<std::string> generator_string_exper(unsigned len)
+	{
+		unsigned int seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
+		std::default_random_engine gen(seed);
+		std::uniform_int_distribution<unsigned> dis(0, alphabet.size() - 1);
+		std::string s(len, 0);
+
+		for (;;)
+		{
+			for (unsigned i = 0; i < len; ++i) {
+				s[i] = alphabet[dis(gen)];
+			}
+			LOGINFO << "generator_string_exper generating....\n";
+			co_yield s;
+		}
+		co_return;
 	}
 }
