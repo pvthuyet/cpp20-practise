@@ -68,7 +68,7 @@ int main()
 	{
 		char input;
 		while (true) {
-			std::cout << "Cpp20 example. Please choose the feature. Press 'h' for help\n";
+			std::cout << "Cpp20 example. Please choose the feature.\n\t'h' - help.\n\t'q' - quit\n";
 			std::cin >> input;
 			switch (input) {
 			case 'h':
@@ -81,17 +81,9 @@ int main()
 
 			case '1':
 				{
-					do {
-						std::cout << "*******************************\n";
-						std::cout << "Generate a string by coroutines\n";
-						testCpprefGenerator();
-						std::cout << "Continue y/n ? ";
-						char con;
-						std::cin >> con;
-						if (con != 'y') {
-							break;
-						}
-					} while (true);
+					std::cout << "*******************************\n";
+					std::cout << "Generate a string by coroutines\n";
+					testCpprefGenerator();
 				}
 				break;
 

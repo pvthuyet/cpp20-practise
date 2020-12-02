@@ -154,7 +154,7 @@ namespace cppref
 			for (unsigned i = 0; i < len; ++i) {
 				s[i] = alphabet[dis(gen)];
 			}
-			LOGINFO << "generator_string generating....\n";
+			LOGINFO << "generator_string generating....\n" << std::flush;
 			co_yield s;
 		}
 		co_return;
@@ -172,7 +172,7 @@ namespace cppref
 			for (unsigned i = 0; i < len; ++i) {
 				s[i] = alphabet[dis(gen)];
 			}
-			LOGINFO << "generator_string_exper generating....\n";
+			LOGINFO << "generator_string_exper generating....\n" << std::flush;
 			co_yield s;
 		}
 		co_return;
