@@ -175,10 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h" />
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Cpp20Features.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
