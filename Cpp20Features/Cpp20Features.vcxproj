@@ -160,6 +160,7 @@
     <ClCompile Include="Cpp20Features.cpp" />
     <ClCompile Include="cppref_generator.ixx" />
     <ClCompile Include="MemoryTracker.ixx" />
+    <ClCompile Include="memory_allocator.ixx" />
     <ClCompile Include="pmr.ixx" />
     <ClCompile Include="pmr2.ixx" />
     <ClCompile Include="pmr_utils.ixx" />
@@ -174,6 +175,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Cpp20Features.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

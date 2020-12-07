@@ -11,10 +11,12 @@ module;
 #include "fmt/core.h"
 #include "fmt/color.h"
 
+export module Fibo.Pmr;
+
 import Fibo.MemoryTracker;
 import Fibo.AddressHelper;
-
-export module Fibo.Pmr;
+import Saigon.MemoryAllocator;
+import Fibo.Pmr2;
 
 void printIndent(std::string_view msg)
 {
@@ -140,4 +142,13 @@ export void synchronized_reusable()
     createVector(&pool, 2);
     
     printIndent("~synchronized_pool_resource");
+}
+
+export void testPolimorphicResource()
+{
+    monotonic_on_stack();
+    monotonic_unreusable();
+    synchronized_reusable();
+
+    fibo::pmr2::testPmr2();
 }

@@ -75,7 +75,8 @@ int main()
 			case 'H':
 				std::cout << "Command parameters:\n";
 				std::cout << "\t'h' or 'H' - help\n";
-				std::cout << "\t'1' - test coroutines\n";
+				std::cout << "\t'1' - c++20 coroutines\n";
+				std::cout << "\t'2' - c++17 pholimorphic resource\n";
 				std::cout << "\t'q' - exit\n";
 				break;
 
@@ -84,6 +85,14 @@ int main()
 					std::cout << "*******************************\n";
 					std::cout << "Generate a string by coroutines\n";
 					testCpprefGenerator();
+				}
+				break;
+
+			case '2':
+				{
+					std::cout << "*******************************\n";
+					std::cout << "c++17 polimorphic resource\n";
+					testPolimorphicResource();
 				}
 				break;
 
@@ -96,11 +105,6 @@ int main()
 		//testIntGenerator();
 		//testStringGenerator();
 		//testCpprefGenerator();
-		//monotonic_on_stack();
-		//monotonic_unreusable();
-		//synchronized_reusable();
-
-		//fibo::pmr2::testPmr2();
 
 		// ranges **********************
 		//fibo::ranges::exam1();

@@ -15,7 +15,7 @@ export module Fibo.MemoryTracker;
 
 namespace fibo
 {
-	std::size_t getCurrrentThreadId() 
+	export std::size_t getCurrrentThreadId() 
 	{
 		try {
 			std::ostringstream oss;
@@ -33,52 +33,52 @@ namespace fibo
 		return 0;
 	}	
 
-	class MemoryTracker final: public std::pmr::memory_resource
+	export void print(void* p, std::size_t bytes, std::size_t align, std::string_view msg)
 	{
-		void print(void* p, std::size_t bytes, std::size_t align, std::string_view msg)
-		{
-			static std::atomic_size_t total = 0;
-			static std::atomic_int spaces = 0;
-			int indents = spaces;
-			fmt::color clr = fmt::color::white;
-			if (msg.at(0) == '~') {
-				indents = --spaces;
-				total.fetch_sub(bytes);
-				clr = fmt::color::tomato;
-			}
-			else {
-				indents = spaces++;
-				total.fetch_add(bytes);
-				clr = fmt::color::green;
-			}
-
-			fmt::print(fmt::fg(clr) | fmt::emphasis::italic,
-				"{:>{}}[thread {}] [{}] {} - {} - {} - {}\n", 
-				' ', 
-				indents * 2,
-				getCurrrentThreadId(),
-				msg,
-				fmt::ptr(p),
-				bytes, 
-				align, 
-				total);
+		static std::atomic_size_t total = 0;
+		static std::atomic_int spaces = 0;
+		int indents = spaces;
+		fmt::color clr = fmt::color::white;
+		if (msg.at(0) == '~') {
+			indents = --spaces;
+			total.fetch_sub(bytes);
+			clr = fmt::color::tomato;
+		}
+		else {
+			indents = spaces++;
+			total.fetch_add(bytes);
+			clr = fmt::color::green;
 		}
 
+		fmt::print(fmt::fg(clr) | fmt::emphasis::italic,
+			"{:>{}}[thread {}] [{}] {} - {} - {} - {}\n",
+			' ',
+			indents * 2,
+			getCurrrentThreadId(),
+			msg,
+			fmt::ptr(p),
+			bytes,
+			align,
+			total);
+	}
+
+	class MemoryTracker final: public std::pmr::memory_resource
+	{
 	private:
-		virtual void* do_allocate(std::size_t bytes, std::size_t align) override final
+		void* do_allocate(std::size_t bytes, std::size_t align) final
 		{
 			auto p = mUpperStream->allocate(bytes, align);
 			print(p, bytes, align, "alloc");
 			return p;
 		}
 
-		virtual void do_deallocate(void*p, std::size_t bytes, std::size_t align) override final
+		void do_deallocate(void*p, std::size_t bytes, std::size_t align) final
 		{
 			print(p, bytes, align, "~alloc");
 			mUpperStream->deallocate(p, bytes, align);
 		}
 
-		virtual bool do_is_equal(std::pmr::memory_resource const& other) const noexcept override final
+		bool do_is_equal(std::pmr::memory_resource const& other) const noexcept final
 		{
 			return mUpperStream->is_equal(other);
 		}
