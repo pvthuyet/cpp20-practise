@@ -3,6 +3,8 @@ module;
 #include <coroutine>
 #include <iostream>
 #include <thread>
+#include <atomic>
+#include <future>
 
 import CpprefGenerator;
 
@@ -12,26 +14,29 @@ export module fibo.coro;
 
 // create global string generator
 
-static int gGenerateIndex = 0;
-
 export void testCpprefGenerator()
 {
+	std::atomic_int gGenerateIndex = 0;
 	auto gStrGenerator = cppref::generator_string(33);
 	auto gStrGeneratorExper = cppref::generator_string_exper(33);
 	auto curIt = gStrGeneratorExper.begin();
 
-	while (true) {
-		auto s1 = gStrGenerator();
-		LOGINFO << "Hand write generate\t" << gGenerateIndex << " - " << s1 << std::endl << std::flush;
+	auto lb = [&](int loops) {
+		for(int i = 0; i < loops; ++i) {
+			auto s1 = gStrGenerator();
+			LOGINFO << "Hand write generate\t" << gGenerateIndex << " - " << s1 << std::endl << std::flush;
 
-		auto s2 = *curIt;
-		LOGINFO << "Experimental generate\t" << gGenerateIndex << " - " << s2 << std::endl << std::flush;
-		++curIt;
+			auto s2 = *curIt;
+			LOGINFO << "Experimental generate\t" << gGenerateIndex << " - " << s2 << std::endl << std::flush;
+			++curIt;
 
-		gGenerateIndex++;
-		std::cout << "\tContinue y/n: ";
-		char c;
-		std::cin >> c;
-		if (c != 'y') break;
-	}
+			gGenerateIndex++;
+			std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		}
+	};
+
+	auto fut1 = std::async(std::launch::async, lb, 2);
+	auto fut2 = std::async(std::launch::async, lb, 3);
+	fut1.wait();
+	fut2.wait();
 }
