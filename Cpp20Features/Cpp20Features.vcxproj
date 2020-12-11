@@ -155,14 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rd_party\fmtlib\src\format.cc" />
+    <ClCompile Include="..\3rd_party\fmtlib\src\os.cc" />
     <ClCompile Include="address_helper.ixx" />
     <ClCompile Include="coro.ixx" />
     <ClCompile Include="Cpp20Features.cpp" />
     <ClCompile Include="cppref_generator.ixx" />
-    <ClCompile Include="import_cycle_bar.cpp" />
-    <ClCompile Include="import_cycle_bar.ixx" />
-    <ClCompile Include="import_cycle_foo.cpp" />
-    <ClCompile Include="import_cycle_foo.ixx" />
     <ClCompile Include="MemoryTracker.ixx" />
     <ClCompile Include="memory_allocator.ixx" />
     <ClCompile Include="pmr.ixx" />
@@ -171,11 +169,6 @@
     <ClCompile Include="range_exam.ixx" />
     <ClCompile Include="sfinae.ixx" />
     <ClCompile Include="solid.ixx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Printer\Printer.vcxproj">
-      <Project>{b7638627-5b43-4f3b-ae27-7700c9c3ad19}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h" />
