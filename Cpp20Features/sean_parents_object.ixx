@@ -1,10 +1,12 @@
+module;
+
 #include <memory>
 
 export module sean_parents_object;
 
 namespace saigon
 {
-	class object_t
+	export class object_t
 	{
 	public:
 		template<class T>
@@ -20,7 +22,7 @@ namespace saigon
 		struct concept_t
 		{
 			virtual ~concept_t() noexcept = default;
-			virtual void do_draw() = 0;
+			virtual void do_draw() const = 0;
 		};
 
 		template <class T>
@@ -28,9 +30,9 @@ namespace saigon
 		{
 			model(T t) : mData{std::move(t)} {}
 			~model() noexcept final {}
-			void do_draw() final
+			void do_draw() const final
 			{ 
-				//draw(mData);
+				draw(mData);
 			}
 			T mData;
 		};

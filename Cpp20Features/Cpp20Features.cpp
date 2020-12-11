@@ -25,6 +25,7 @@ import Fibo.Pmr2;
 import Fibo.MemoryTracker;
 import range_exam;
 import fibo.coro;
+import sean_parents_object;
 
 using namespace std;
 
@@ -60,6 +61,11 @@ int testSfinaeCpp20()
 	return 0;
 }
 
+class my_class_t {};
+void draw(my_class_t const&) 
+{ 
+	std::cout << "\tmy_class_t\n"; 
+}
 
 int main()
 {
@@ -100,6 +106,16 @@ int main()
 				{
 					std::cout << "*******************************\n";
 					std::cout << "doesn't support cycle dependencies\n";
+
+				}
+				break;
+
+			case '4' :
+				{
+					std::cout << "*******************************\n";
+					std::cout << "Sean Parents: Inheritance Is The Base Class of Evil\n";
+					saigon::object_t obj{ my_class_t{} };
+					draw(obj);
 
 				}
 				break;
