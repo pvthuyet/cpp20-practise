@@ -25,6 +25,8 @@ import Fibo.Pmr2;
 import Fibo.MemoryTracker;
 import range_exam;
 import fibo.coro;
+import import_cycle_foo;
+import import_cycle_bar;
 
 using namespace std;
 
@@ -93,6 +95,17 @@ int main()
 					std::cout << "*******************************\n";
 					std::cout << "c++17 polimorphic resource\n";
 					testPolimorphicResource();
+				}
+				break;
+
+			case '3':
+				{
+					std::cout << "*******************************\n";
+					std::cout << "Import cycle\n";
+					cycle::foo foo;
+					cycle::bar bar;
+					//foo.printAll(&bar);
+					bar.printAll(&foo);
 				}
 				break;
 

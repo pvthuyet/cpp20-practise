@@ -159,6 +159,10 @@
     <ClCompile Include="coro.ixx" />
     <ClCompile Include="Cpp20Features.cpp" />
     <ClCompile Include="cppref_generator.ixx" />
+    <ClCompile Include="import_cycle_bar.cpp" />
+    <ClCompile Include="import_cycle_bar.ixx" />
+    <ClCompile Include="import_cycle_foo.cpp" />
+    <ClCompile Include="import_cycle_foo.ixx" />
     <ClCompile Include="MemoryTracker.ixx" />
     <ClCompile Include="memory_allocator.ixx" />
     <ClCompile Include="pmr.ixx" />

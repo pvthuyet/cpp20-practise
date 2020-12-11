@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="import circle">
+      <UniqueIdentifier>{9a42181b-abc5-4d64-a79d-b633ea5786e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cpp20Features.cpp">
@@ -50,6 +53,18 @@
     </ClCompile>
     <ClCompile Include="memory_allocator.ixx">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="import_cycle_foo.ixx">
+      <Filter>import circle</Filter>
+    </ClCompile>
+    <ClCompile Include="import_cycle_bar.ixx">
+      <Filter>import circle</Filter>
+    </ClCompile>
+    <ClCompile Include="import_cycle_foo.cpp">
+      <Filter>import circle</Filter>
+    </ClCompile>
+    <ClCompile Include="import_cycle_bar.cpp">
+      <Filter>import circle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
