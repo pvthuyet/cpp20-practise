@@ -167,6 +167,7 @@
     <ClCompile Include="pmr2.ixx" />
     <ClCompile Include="pmr_utils.ixx" />
     <ClCompile Include="range_exam.ixx" />
+    <ClCompile Include="sean_parents_object.ixx" />
     <ClCompile Include="sfinae.ixx" />
     <ClCompile Include="solid.ixx" />
   </ItemGroup>

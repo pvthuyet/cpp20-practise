@@ -66,6 +66,9 @@
     <ClCompile Include="..\3rd_party\fmtlib\src\os.cc">
       <Filter>3rd_party\fmtlib</Filter>
     </ClCompile>
+    <ClCompile Include="sean_parents_object.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">
