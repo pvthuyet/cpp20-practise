@@ -61,12 +61,6 @@ int testSfinaeCpp20()
 	return 0;
 }
 
-class my_class_t {};
-void draw(my_class_t const&) 
-{ 
-	std::cout << "\tmy_class_t\n"; 
-}
-
 int main()
 {
 	std::pmr::set_default_resource(fibo::getTrackerMemoryResource());
@@ -83,6 +77,8 @@ int main()
 				std::cout << "\t'h' or 'H' - help\n";
 				std::cout << "\t'1' - c++20 coroutines\n";
 				std::cout << "\t'2' - c++17 pholimorphic resource\n";
+				std::cout << "\t'3' - cycle denpendencies\n";
+				std::cout << "\t'4' - polymorphism issues\n";
 				std::cout << "\t'q' - exit\n";
 				break;
 
@@ -114,9 +110,7 @@ int main()
 				{
 					std::cout << "*******************************\n";
 					std::cout << "Sean Parents: Inheritance Is The Base Class of Evil\n";
-					saigon::object_t obj{ my_class_t{} };
-					draw(obj);
-
+					saigon::test_object_t();
 				}
 				break;
 
