@@ -26,6 +26,7 @@ import Fibo.MemoryTracker;
 import range_exam;
 import fibo.coro;
 import sean_parents_object;
+import TickTock;
 
 using namespace std;
 
@@ -112,6 +113,10 @@ int main()
 					std::cout << "Sean Parents: Inheritance Is The Base Class of Evil\n";
 					saigon::test_object_t();
 				}
+				break;
+
+			case '5' :
+				fibo::test_ticktock();
 				break;
 
 			case 'q':

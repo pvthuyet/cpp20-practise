@@ -10,6 +10,13 @@ namespace fibo
 {
 	struct message_base
 	{
+		virtual void tag() {}
+	};
+
+	template<typename M>
+	struct handles
+	{
+		virtual void handle(const M& msg) = 0;
 	};
 
 	struct component_base
@@ -34,29 +41,29 @@ namespace fibo
 	};
 
 	template<typename... Ms>
-	struct component 
+	struct component : component_base, handles<Ms>...
 	{
-	};
-
-	template<typename T, typename... Ts>
-	struct component<T, Ts...> : component<Ts...>
-	{
-		virtual void handle(const T& msg) = 0;
+		using handles<Ms>::handle...;
 
 		template<typename M>
-		void sendDown(const M& msg)
+		bool tryHandle(const message_base& msg)
 		{
+			if (const M* m = dynamic_cast<const M*>(&msg)) {
+				handle(*m);
+				return true;
+			}
+			return false;
 		}
 
-		template<typename M>
-		void sendUp(const M& msg)
+		void handle(const message_base& msg) override
 		{
+			(tryHandle<Ms>(msg) || ...);
 		}
 	};
 
-	struct start {};
-	struct tick {};
-	struct tock {};
+	struct start : message_base {};
+	struct tick : message_base {};
+	struct tock : message_base {};
 
 	struct tick_tock : component<start, tock>
 	{
@@ -72,6 +79,9 @@ namespace fibo
 		}
 	};
 
+	struct idle : component<>
+	{};
+
 	struct responder : component<tick>
 	{
 		void handle(const tick& msg) final
@@ -80,5 +90,23 @@ namespace fibo
 		}
 	};
 
-	tick_tock tok;
+	export void test_ticktock()
+	{
+		std::unique_ptr<component_base> a = std::make_unique<tick_tock>();
+		std::unique_ptr<component_base> b = std::make_unique<idle>();
+		std::unique_ptr<component_base> c = std::make_unique<responder>();
+		std::unique_ptr<component_base> d = std::make_unique<idle>();
+		std::unique_ptr<component_base> e = std::make_unique<responder>();
+
+		e->parent = &*d;
+		d->children.push_back(std::move(e));
+		d->parent = &*b;
+		b->children.push_back(std::move(d));
+		c->parent = &*b;
+		b->children.push_back(std::move(c));
+		b->parent = &*a;
+		a->children.push_back(std::move(b));
+
+		a->handle(start{});
+	}
 }
