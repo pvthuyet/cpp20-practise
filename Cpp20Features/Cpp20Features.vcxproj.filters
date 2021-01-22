@@ -72,6 +72,9 @@
     <ClCompile Include="tick_tock.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tick_tock2.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h">

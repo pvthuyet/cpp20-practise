@@ -171,6 +171,7 @@
     <ClCompile Include="sfinae.ixx" />
     <ClCompile Include="solid.ixx" />
     <ClCompile Include="tick_tock.ixx" />
+    <ClCompile Include="tick_tock2.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="printer_concepts.h" />
