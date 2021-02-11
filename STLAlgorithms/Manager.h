@@ -1,8 +1,12 @@
 #pragma once
 
-enum class Catalogs
+#include <bit>
+#include <array>
+#include <string>
+
+enum Catalogs : int
 {
-	NON_MODIFYING_SEQUENCE_OPERATIONS,
+	NON_MODIFYING_SEQUENCE_OPERATIONS = 0,
 	MODIFYING_SEQUENCE_OPERATIONS,
 	PARTITIONING_OPERATIONS,
 	SORTING_OPERATIONS,
@@ -14,11 +18,20 @@ enum class Catalogs
 	COMPARISON_OPERATIONS,
 	PERMUTATION_OPERATIONS,
 	NUMERIC_OPERATIONS,
-	OPERATIONS_ON_UNINITIALIZED_MEMORY
+	OPERATIONS_ON_UNINITIALIZED_MEMORY,
+	CATALOGS_END
 };
 
 class Manager
 {
+public:
+	Manager();
+	void start() const;
 
+private:
+	void printCatalogs() const;
+
+private:
+	std::array<std::string, Catalogs::CATALOGS_END> mCatalogs;
 };
 

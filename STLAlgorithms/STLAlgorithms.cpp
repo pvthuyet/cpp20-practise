@@ -2,27 +2,15 @@
 //
 
 #include <iostream>
-
+#include "Manager.h"
 int main()
 {
-    std::cout << "Catalogs\n";
-    std::cout
-        << "\t1 - Non-modifying sequence operations\n"
-        << "\t2 - Modifying sequence operations\n"
-        << "\t3 - Partitioning operations\n"
-        << "\t4 - Sorting operations\n"
-        << "\t5 - Binary search operations (on sorted ranges)\n"
-        << "\t6 - Other operations on sorted ranges\n"
-        << "\t7 - Set operations (on sorted ranges)\n"
-        << "\t8 - Heap operations\n"
-        << "\t9 - Minimum/maximum operations\n"
-        << "\t10 - Comparison operations\n"
-        << "\t11 - Permutation operations\n"
-        << "\t12 - Numeric operations\n"
-        << "\t13 - Operations on uninitialized memory\n";
-    std::cout << "\nChoose catalog: ";
-    std::string cat;
-    std::cin >> cat;
+	try {
+		Manager{}.start();
+	}
+	catch (std::exception const& ex) {
+		std::cout << ex.what() << std::endl;
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
