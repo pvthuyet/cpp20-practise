@@ -159,19 +159,11 @@ HCURSOR CSTLAlgorithmsDlg::OnQueryDragIcon()
 
 void CSTLAlgorithmsDlg::initalizeCatalogs()
 {
-	mLstCatalog.AddString(_T("Non-modifying sequence operations"));
-	mLstCatalog.AddString(_T("Modifying sequence operations"));
-	mLstCatalog.AddString(_T("Partitioning operations"));
-	mLstCatalog.AddString(_T("Sorting operations"));
-	mLstCatalog.AddString(_T("Binary search operations (on sorted ranges)"));
-	mLstCatalog.AddString(_T("Other operations on sorted ranges"));
-	mLstCatalog.AddString(_T("Set operations (on sorted ranges)"));
-	mLstCatalog.AddString(_T("Heap operations"));
-	mLstCatalog.AddString(_T("Minimum/maximum operations"));
-	mLstCatalog.AddString(_T("Comparison operations"));
-	mLstCatalog.AddString(_T("Permutation operations"));
-	mLstCatalog.AddString(_T("Numeric operations"));
-	mLstCatalog.AddString(_T("Operations on uninitialized memory"));
+	mManager.load();
+	for (auto const& el : mManager.getCatalogs()) {
+		std::wstring tmp(el.catalog.begin(), el.catalog.end());
+		mLstCatalog.AddString(tmp.c_str());
+	}
 }
 
 void CSTLAlgorithmsDlg::initalizeOperation()
@@ -179,9 +171,9 @@ void CSTLAlgorithmsDlg::initalizeOperation()
 	mLstOperation.AddString(_T("Non-modifying sequence operations"));
 }
 
+
 void CSTLAlgorithmsDlg::OnLbnSelchangeCatalog()
 {
 	int sel = mLstCatalog.GetCurSel();
-	initalizeOperation();
 	// TODO: Add your control notification handler code here
 }

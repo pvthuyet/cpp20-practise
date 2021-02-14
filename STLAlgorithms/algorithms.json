@@ -1,0 +1,24 @@
+{
+  "algorithms": [
+    {
+      "id": 0,
+      "catalog": "Non-modifying sequence operations",
+      "operations": [
+        "all_of",
+        "any_of",
+		"none_of",
+		"ranges::all_of",
+		"ranges::any_of",
+		"ranges::none_of"
+      ]
+    },
+    {
+      "id": 1,
+      "catalog": "Modifying sequence operations",
+      "operations": [
+        "copy",
+        "copy_if"
+      ]
+    }
+  ]
+}

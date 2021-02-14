@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Manager.h"
 
 // CSTLAlgorithmsDlg dialog
 class CSTLAlgorithmsDlg : public CDialogEx
@@ -41,4 +42,7 @@ public:
 public:
 	CListBox mLstCatalog;
 	CListBox mLstOperation;
+
+private:
+	Manager mManager;
 };

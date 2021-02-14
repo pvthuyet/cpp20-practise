@@ -10,4 +10,10 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
+#ifdef _UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") 
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 #endif //PCH_H

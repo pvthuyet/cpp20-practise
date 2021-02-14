@@ -16,6 +16,12 @@
     <Filter Include="Model">
       <UniqueIdentifier>{4ee189a2-1918-442c-aa56-5d21b088403d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3rd_party">
+      <UniqueIdentifier>{4417692c-85dc-49f0-a39f-d6be0d37e8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd_party\fmtlib">
+      <UniqueIdentifier>{76d5df86-01a4-469d-aa00-870f80f48a82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="STLAlgorithms.h">
@@ -36,7 +42,10 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Catalogs.h">
+    <ClInclude Include="Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,8 +59,17 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Catalogs.cpp">
+    <ClCompile Include="Manager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_party\fmtlib\src\format.cc">
+      <Filter>3rd_party\fmtlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_party\fmtlib\src\os.cc">
+      <Filter>3rd_party\fmtlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
