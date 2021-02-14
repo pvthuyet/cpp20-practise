@@ -36,3 +36,14 @@ const std::vector<Catalog>& Manager::getCatalogs() const
 {
 	return mCatalogs;
 }
+
+const std::vector<std::string>& Manager::getOperations(int index) const
+{
+	for (const auto& el : mCatalogs) {
+		if (el.id == index) {
+			return el.operations;
+		}
+	}
+	static std::vector<std::string> dummy{};
+	return dummy;
+}

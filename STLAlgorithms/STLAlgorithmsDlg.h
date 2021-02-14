@@ -11,7 +11,7 @@ class CSTLAlgorithmsDlg : public CDialogEx
 {
 private:
 	void initalizeCatalogs();
-	void initalizeOperation();
+	void UpdateOperationsList(int selIndex);
 
 // Construction
 public:

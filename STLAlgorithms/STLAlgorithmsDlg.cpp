@@ -166,14 +166,19 @@ void CSTLAlgorithmsDlg::initalizeCatalogs()
 	}
 }
 
-void CSTLAlgorithmsDlg::initalizeOperation()
+void CSTLAlgorithmsDlg::UpdateOperationsList(int selIndex)
 {
-	mLstOperation.AddString(_T("Non-modifying sequence operations"));
+	mLstOperation.ResetContent();
+
+	for (auto const& el : mManager.getOperations(selIndex)) {
+		std::wstring tmp(el.begin(), el.end());
+		mLstOperation.AddString(tmp.c_str());
+	}
 }
 
 
 void CSTLAlgorithmsDlg::OnLbnSelchangeCatalog()
 {
-	int sel = mLstCatalog.GetCurSel();
+	UpdateOperationsList(mLstCatalog.GetCurSel());
 	// TODO: Add your control notification handler code here
 }

@@ -2,7 +2,7 @@
   "algorithms": [
     {
       "id": 0,
-      "catalog": "Non-modifying sequence operations",
+      "catalog": "1. Non-modifying sequence operations",
       "operations": [
         "all_of",
         "any_of",
@@ -14,7 +14,7 @@
     },
     {
       "id": 1,
-      "catalog": "Modifying sequence operations",
+      "catalog": "2. Modifying sequence operations",
       "operations": [
         "copy",
         "copy_if"
