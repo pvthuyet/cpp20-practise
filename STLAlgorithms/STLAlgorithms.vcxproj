@@ -194,6 +194,7 @@
     <ClInclude Include="Catalog.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="NoneModifyingSequence.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="STLAlgorithms.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="..\3rd_party\fmtlib\src\os.cc" />
     <ClCompile Include="Catalog.cpp" />
     <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="NoneModifyingSequence.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -45,4 +45,6 @@ public:
 
 private:
 	Manager mManager;
+public:
+	afx_msg void OnLbnSelchangeListOperation();
 };

@@ -13,14 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Model">
-      <UniqueIdentifier>{4ee189a2-1918-442c-aa56-5d21b088403d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3rd_party">
       <UniqueIdentifier>{4417692c-85dc-49f0-a39f-d6be0d37e8ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="3rd_party\fmtlib">
       <UniqueIdentifier>{76d5df86-01a4-469d-aa00-870f80f48a82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Catalog">
+      <UniqueIdentifier>{4ee189a2-1918-442c-aa56-5d21b088403d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +48,9 @@
     <ClInclude Include="Catalog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NoneModifyingSequence.h">
+      <Filter>Catalog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="STLAlgorithms.cpp">
@@ -70,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="..\3rd_party\fmtlib\src\os.cc">
       <Filter>3rd_party\fmtlib</Filter>
+    </ClCompile>
+    <ClCompile Include="NoneModifyingSequence.cpp">
+      <Filter>Catalog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

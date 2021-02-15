@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CSTLAlgorithmsDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_LBN_SELCHANGE(IDC_CATALOG, &CSTLAlgorithmsDlg::OnLbnSelchangeCatalog)
+	ON_LBN_SELCHANGE(IDC_LIST_OPERATION, &CSTLAlgorithmsDlg::OnLbnSelchangeListOperation)
 END_MESSAGE_MAP()
 
 
@@ -180,5 +181,12 @@ void CSTLAlgorithmsDlg::UpdateOperationsList(int selIndex)
 void CSTLAlgorithmsDlg::OnLbnSelchangeCatalog()
 {
 	UpdateOperationsList(mLstCatalog.GetCurSel());
+	// TODO: Add your control notification handler code here
+}
+
+
+void CSTLAlgorithmsDlg::OnLbnSelchangeListOperation()
+{
+	mManager.show(mLstCatalog.GetCurSel(), mLstOperation.GetCurSel());
 	// TODO: Add your control notification handler code here
 }

@@ -2,6 +2,13 @@
 #include <string>
 #include <vector>
 
+enum CatalogIndex : int
+{
+	NON_MODIFYING_SEQUENCE_OPERATIONS = 0,
+	MODIFYING_SEQUENCE_OPERATIONS,
+	END
+};
+
 class Catalog
 {
 public:

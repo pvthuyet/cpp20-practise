@@ -5,6 +5,7 @@
 #include "nlohmann/json.hpp"
 #include <fstream>
 #include <iostream>
+#include "NoneModifyingSequence.h"
 
 using json = nlohmann::json;
 
@@ -46,4 +47,17 @@ const std::vector<std::string>& Manager::getOperations(int index) const
 	}
 	static std::vector<std::string> dummy{};
 	return dummy;
+}
+
+void Manager::show(int catalogIndex, int operationIndex) const
+{
+	switch (catalogIndex)
+	{
+	case NON_MODIFYING_SEQUENCE_OPERATIONS:
+		NoneModifyingSequence{}.show(operationIndex);
+		break;
+
+	default:
+		break;
+	}
 }
