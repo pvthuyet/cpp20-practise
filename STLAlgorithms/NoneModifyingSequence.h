@@ -13,9 +13,12 @@ class NoneModifyingSequence
 	};
 
 public:
+	static void name();
 	void show(unsigned int index) const;
 
 private:
 	void all_of_operation() const;
+	void any_of_operation() const;
+	void none_of_operation() const;
 };
 

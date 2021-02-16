@@ -49,6 +49,19 @@ const std::vector<std::string>& Manager::getOperations(int index) const
 	return dummy;
 }
 
+void Manager::name(int catalogIndex)
+{
+	switch (catalogIndex)
+	{
+	case NON_MODIFYING_SEQUENCE_OPERATIONS:
+		NoneModifyingSequence::name();
+		break;
+
+	default:
+		break;
+	}
+}
+
 void Manager::show(int catalogIndex, int operationIndex) const
 {
 	switch (catalogIndex)

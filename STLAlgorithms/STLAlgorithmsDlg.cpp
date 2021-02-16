@@ -181,6 +181,7 @@ void CSTLAlgorithmsDlg::UpdateOperationsList(int selIndex)
 void CSTLAlgorithmsDlg::OnLbnSelchangeCatalog()
 {
 	UpdateOperationsList(mLstCatalog.GetCurSel());
+	Manager::name(mLstCatalog.GetCurSel());
 	// TODO: Add your control notification handler code here
 }
 
