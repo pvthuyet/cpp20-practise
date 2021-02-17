@@ -4,12 +4,12 @@
       "id": 0,
       "catalog": "1. Non-modifying sequence operations",
       "operations": [
-        "all_of (C++11)",
-        "any_of (C++11)",
-		"none_of (C++11)",
-		"ranges::all_of (C++20)",
-		"ranges::any_of (C++20)",
-		"ranges::none_of (C++20)"
+        "1. all_of (C++11)",
+        "2. any_of (C++11)",
+		"3. none_of (C++11)",
+		"4. ranges::all_of (C++20)",
+		"5. ranges::any_of (C++20)",
+		"6. ranges::none_of (C++20)"
       ]
     },
     {

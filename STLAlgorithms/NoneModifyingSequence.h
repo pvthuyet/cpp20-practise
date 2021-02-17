@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 class NoneModifyingSequence
 {
 	enum Operation : int
@@ -20,5 +22,12 @@ private:
 	void all_of_operation() const;
 	void any_of_operation() const;
 	void none_of_operation() const;
+
+	void ranges_all_of_operation() const;
+	void ranges_any_of_operation() const;
+	void ranges_none_of_operation() const;
+
+private:
+	std::vector<int> generateNumber(int size) const;
 };
 
