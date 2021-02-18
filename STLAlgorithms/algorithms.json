@@ -9,7 +9,11 @@
 		"3. none_of (C++11)",
 		"4. ranges::all_of (C++20)",
 		"5. ranges::any_of (C++20)",
-		"6. ranges::none_of (C++20)"
+		"6. ranges::none_of (C++20)",
+		"7. for_each (C++11)",
+		"8. for_each_n (C++17)",
+		"9. ranges::for_each (C++20)",
+		"10. ranges::for_each_n (C++20)"
       ]
     },
     {

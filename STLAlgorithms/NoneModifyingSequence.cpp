@@ -42,6 +42,22 @@ void NoneModifyingSequence::show(unsigned int index) const
 		ranges_none_of_operation();
 		break;
 
+	case for_each:
+		for_each_operation();
+		break;
+
+	case for_each_n:
+		for_each_n_operation();
+		break;
+
+	case ranges_for_each:
+		ranges_for_each_operation();
+		break;
+
+	case ranges_for_each_n:
+		ranges_for_each_n_operation();
+		break;
+
 	default:
 		break;
 	}
@@ -57,7 +73,7 @@ void NoneModifyingSequence::all_of_operation() const
 	fmt::print("***** Examples 1 *****\n");
 	//using namespace std::literals;
 	using stc = std::chrono::steady_clock;
-	std::vector<int> v = generateNumber(1'000'000'000);
+	std::vector<int> v = generateNumber(1'000);
 	auto factor = v.back() + 1;
 	fmt::print("Among the numbers {} -> {}. Check all elements are less than {} ?", v.front(), v.back(), factor);
 	fmt::print("\n");
@@ -196,4 +212,45 @@ std::vector<int> NoneModifyingSequence::generateNumber(int size) const
 	std::iota(vec.begin(), vec.end(), 1);
 
 	return vec;
+}
+
+void NoneModifyingSequence::for_each_operation() const
+{
+	fmt::print(
+		"+{0:-^{2}}+\n"
+		"|{1: ^{2}}|\n"
+		"+{0:-^{2}}+\n", "", "std::for_each", 30);
+	fmt::print("***** Examples 1 *****\n");
+	auto v = generateNumber(20);
+	fmt::print("Print out all elments: ");
+	std::for_each(v.cbegin(), v.cend(), [](auto const& i) {
+		fmt::print("{} ", i);
+		});
+	fmt::print("\n=> Done\n\n");
+}
+
+void NoneModifyingSequence::for_each_n_operation() const
+{
+	fmt::print(
+		"+{0:-^{2}}+\n"
+		"|{1: ^{2}}|\n"
+		"+{0:-^{2}}+\n", "", "std::for_each_n", 30);
+	fmt::print("***** Examples 1 *****\n");
+	auto v = generateNumber(20);
+	fmt::print("Print out 5 elements start from 3 index: ");
+	std::for_each_n(v.cbegin() + 3, 5, [](auto const& i) {
+		fmt::print("{} ", i);
+		});
+	fmt::print("\n=> Done\n\n");
+}
+
+
+void NoneModifyingSequence::ranges_for_each_operation() const
+{
+
+}
+
+void NoneModifyingSequence::ranges_for_each_n_operation() const
+{
+
 }
