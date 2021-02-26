@@ -7,6 +7,7 @@ int main(int argc, char* argv[])
 {
 	using namespace boost::interprocess;
 	if (argc == 1) { // Parent process
+		std::cout << "Parent process\n";
 		// Remove share memory on construction and destruction
 		struct shm_remove {
 			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
@@ -15,10 +16,13 @@ int main(int argc, char* argv[])
 
 		// Create a managed shared memory segment
 		managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+
+		// Allocate a portion of the segment (raw memory)
 		managed_shared_memory::size_type free_memory = segment.get_free_memory();
 		void* shptr = segment.allocate(1024);
 
 		//Check invariant
+		auto tmpsz = segment.get_free_memory();
 		if (free_memory < segment.get_free_memory()) {
 			return 1;
 		}
@@ -29,11 +33,43 @@ int main(int argc, char* argv[])
 		std::stringstream ss;
 		ss << argv[0] << " " << handle;
 		ss << std::ends;
+		std::cout << ss.str() << std::endl;
 
-		// 
-		// Allocate a portion of the segment (raw memory)
+		//Launch child process
+		if (0 != std::system(ss.str().c_str())) {
+			return 1;
+		}
 
+		//Check memory has been free
+		tmpsz = segment.get_free_memory();
+		if (free_memory != segment.get_free_memory()) {
+			return 1;
+		}
 	}
+	else {
+		std::cout << "Child process\n";
+		// Open managed segment
+		managed_shared_memory segment(open_only, "MySharedMemory");
+
+		//An handle from the base address can identify any byte of the shared
+		//memory segment even if it is mapped in different base addresses
+		managed_shared_memory::handle_t handle = 0;
+
+		//Obtain handle value
+		std::stringstream ss;
+		ss << argv[1];
+		ss >> handle;
+
+		//Get buffer local address from handle
+		void* msg = segment.get_address_from_handle(handle);
+		std::cout << (char*)msg << std::endl;
+
+		//Deallocate previously allocated memory
+		segment.deallocate(msg);
+	}
+
+	system("pause");
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
