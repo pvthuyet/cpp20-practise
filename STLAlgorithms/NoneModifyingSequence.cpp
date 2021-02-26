@@ -5,6 +5,14 @@
 #include <numbers>
 #include <chrono>
 #include <execution>
+#include "Utils.h"
+#include "gsl/assert"
+
+using ICPair = const std::pair<int, char>;
+std::ostream& operator << (std::ostream& os, const ICPair& p)
+{
+
+}
 
 void NoneModifyingSequence::name()
 {
@@ -73,7 +81,7 @@ void NoneModifyingSequence::all_of_operation() const
 	fmt::print("***** Examples 1 *****\n");
 	//using namespace std::literals;
 	using stc = std::chrono::steady_clock;
-	std::vector<int> v = generateNumber(1'000);
+	std::vector<int> v = Utils::generateNumber(1'000);
 	auto factor = v.back() + 1;
 	fmt::print("Among the numbers {} -> {}. Check all elements are less than {} ?", v.front(), v.back(), factor);
 	fmt::print("\n");
@@ -206,14 +214,6 @@ void NoneModifyingSequence::ranges_none_of_operation() const
 	fmt::print("=> Done\n\n");
 }
 
-std::vector<int> NoneModifyingSequence::generateNumber(int size) const
-{
-	std::vector<int> vec(size);
-	std::iota(vec.begin(), vec.end(), 1);
-
-	return vec;
-}
-
 void NoneModifyingSequence::for_each_operation() const
 {
 	fmt::print(
@@ -221,7 +221,7 @@ void NoneModifyingSequence::for_each_operation() const
 		"|{1: ^{2}}|\n"
 		"+{0:-^{2}}+\n", "", "std::for_each", 30);
 	fmt::print("***** Examples 1 *****\n");
-	auto v = generateNumber(20);
+	auto v = Utils::generateNumber(20);
 	fmt::print("Print out all elments: ");
 	std::for_each(v.cbegin(), v.cend(), [](auto const& i) {
 		fmt::print("{} ", i);
@@ -236,7 +236,7 @@ void NoneModifyingSequence::for_each_n_operation() const
 		"|{1: ^{2}}|\n"
 		"+{0:-^{2}}+\n", "", "std::for_each_n", 30);
 	fmt::print("***** Examples 1 *****\n");
-	auto v = generateNumber(20);
+	auto v = Utils::generateNumber(20);
 	fmt::print("Print out 5 elements start from 3 index: ");
 	std::for_each_n(v.cbegin() + 3, 5, [](auto const& i) {
 		fmt::print("{} ", i);
@@ -244,13 +244,52 @@ void NoneModifyingSequence::for_each_n_operation() const
 	fmt::print("\n=> Done\n\n");
 }
 
-
 void NoneModifyingSequence::ranges_for_each_operation() const
 {
+	fmt::print(
+		"+{0:-^{2}}+\n"
+		"|{1: ^{2}}|\n"
+		"+{0:-^{2}}+\n", "", "std::ranges::for_each", 30);
 
+	struct Sum {
+		int _sum{};
+		void operator()(int n) { _sum += n; }
+	};
+
+	auto nums = Utils::randomNumber(6, 1, 10);
+	auto print = [](auto const& i) { fmt::print(" {}", i); };
+	
+	fmt::print("Before: ");
+	std::ranges::for_each(std::as_const(nums), print);
+	fmt::print("\n");
+
+	// Modify each element
+	std::ranges::for_each(nums, [](auto& i) { ++i; });
+	auto [i, s] = std::ranges::for_each(nums.cbegin(), nums.cend(), Sum{});
+	Expects(i == nums.cend());
+
+	fmt::print("After: ");
+	std::ranges::for_each(std::as_const(nums), print);
+	fmt::print("\nsum: {}\n", s._sum);
+
+	using pair = std::pair<int, std::string>;
+	std::vector<pair> pairs = { {1, "one"}, {2, "two"} , {3, "three"} };
+
+	fmt::print("Project the pair::first: ");
+	std::ranges::for_each(pairs, print, [](auto const& p) { return p.first; });
+	fmt::print("\n");
+
+	fmt::print("Project the pair::second: ");
+	std::ranges::for_each(pairs, print, [](auto const& p) { return p.second; });
+	fmt::print("\n\n");
 }
 
 void NoneModifyingSequence::ranges_for_each_n_operation() const
 {
+	fmt::print(
+		"+{0:-^{2}}+\n"
+		"|{1: ^{2}}|\n"
+		"+{0:-^{2}}+\n", "", "std::ranges::for_each", 30);
 
 }
+

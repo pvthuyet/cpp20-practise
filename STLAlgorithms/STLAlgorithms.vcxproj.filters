@@ -22,6 +22,9 @@
     <Filter Include="Catalog">
       <UniqueIdentifier>{4ee189a2-1918-442c-aa56-5d21b088403d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{e6a96d37-e4ea-4dff-92e5-4dec4acb947f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="STLAlgorithms.h">
@@ -51,6 +54,9 @@
     <ClInclude Include="NoneModifyingSequence.h">
       <Filter>Catalog</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="STLAlgorithms.cpp">
@@ -76,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="NoneModifyingSequence.cpp">
       <Filter>Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

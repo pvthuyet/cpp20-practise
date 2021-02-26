@@ -200,6 +200,7 @@
     <ClInclude Include="STLAlgorithms.h" />
     <ClInclude Include="STLAlgorithmsDlg.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rd_party\fmtlib\src\format.cc" />
@@ -215,6 +216,7 @@
     </ClCompile>
     <ClCompile Include="STLAlgorithms.cpp" />
     <ClCompile Include="STLAlgorithmsDlg.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="STLAlgorithms.rc" />

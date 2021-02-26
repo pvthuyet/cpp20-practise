@@ -35,8 +35,5 @@ private:
 	void for_each_n_operation() const;
 	void ranges_for_each_operation() const;
 	void ranges_for_each_n_operation() const;
-
-private:
-	std::vector<int> generateNumber(int size) const;
 };
 
