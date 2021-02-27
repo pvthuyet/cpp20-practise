@@ -3,7 +3,20 @@
 
 #include <iostream>
 #include <boost/interprocess/managed_shared_memory.hpp>
+#include <boost/interprocess/offset_ptr.hpp>
+#include <thread>
+
+int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[]);
+int Creating_named_shared_memory_objects(int argc, char* argv[]);
+int Using_an_offset_smart_pointer_for_shared_memory(int argc, char* argv[]);
+
 int main(int argc, char* argv[])
+{
+	//return Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(argc, argv);
+	return Creating_named_shared_memory_objects(argc, argv);
+}
+
+int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[])
 {
 	using namespace boost::interprocess;
 	if (argc == 1) { // Parent process
@@ -66,6 +79,140 @@ int main(int argc, char* argv[])
 
 		//Deallocate previously allocated memory
 		segment.deallocate(msg);
+	}
+
+	system("pause");
+	return 0;
+}
+
+int Creating_named_shared_memory_objects(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	typedef std::pair<double, int> MyType;
+	if (argc == 1) {  //Parent process
+		std::cout << "\nParent process " << std::this_thread::get_id() << std::endl;
+		struct shm_remove
+		{
+			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+			~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		} remover;
+
+		//Construct managed shared memory
+		managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+
+		//Create an object of MyType initialized to {0.0, 0}
+		MyType* instance = segment.construct<MyType>
+			("MyType instance")  //name of the object
+			(0.0, 0);            //ctor first argument
+
+		//Create an array of 10 elements of MyType initialized to {0.0, 0}
+		MyType* array = segment.construct<MyType>
+			("MyType array")     //name of the object
+			[10]                 //number of elements
+			(0.1, 3);            //Same two ctor arguments for all objects
+
+		//Create an array of 3 elements of MyType initializing each one
+		//to a different value {0.0, 0}, {1.0, 1}, {2.0, 2}...
+		float float_initializer[3] = { 0.0, 1.0, 2.0 };
+		int   int_initializer[3] = { 0, 1, 2 };
+
+		MyType* array_it = segment.construct_it<MyType>
+			("MyType array from it")   //name of the object
+			[3]                        //number of elements
+			(&float_initializer[0]    //Iterator for the 1st ctor argument
+			, &int_initializer[0]);    //Iterator for the 2nd ctor argument
+
+		//Launch child process
+		std::string s(argv[0]); 
+		s += " child ";
+		std::cout << "Launch child process: " << s << std::endl;
+		if (0 != std::system(s.c_str()))
+			return 1;
+
+		//Check child has destroyed all objects
+		if (segment.find<MyType>("MyType array").first ||
+			segment.find<MyType>("MyType instance").first ||
+			segment.find<MyType>("MyType array from it").first)
+			return 1;
+	}
+	else {
+		std::cout << "\nChild process: " << std::this_thread::get_id() << std::endl;
+		//Open managed shared memory
+		managed_shared_memory segment(open_only, "MySharedMemory");
+
+		std::pair<MyType*, managed_shared_memory::size_type> res;
+
+		//Find the array
+		res = segment.find<MyType>("MyType array");
+		//Length should be 10
+		if (res.second != 10) return 1;
+		std::cout << "MyType array:\t";
+		MyType* reArray = res.first;
+		for (int i = 0; i < res.second; ++i) {
+			std::cout << "(" << reArray[i].first << ", " << reArray[i].second << "), ";
+		}
+		std::cout << std::endl;
+
+		//Find the object
+		res = segment.find<MyType>("MyType instance");
+		//Length should be 1
+		if (res.second != 1) return 1;
+
+		//Find the array constructed from iterators
+		res = segment.find<MyType>("MyType array from it");
+		//Length should be 3
+		if (res.second != 3) return 1;
+
+		//We're done, delete all the objects
+		segment.destroy<MyType>("MyType array");
+		segment.destroy<MyType>("MyType instance");
+		segment.destroy<MyType>("MyType array from it");
+	}
+	system("pause");
+	return 0;
+}
+
+int Using_an_offset_smart_pointer_for_shared_memory(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	//Shared memory linked list node
+	struct list_node
+	{
+		offset_ptr<list_node> next;
+		int                   value;
+	};
+
+	//Remove shared memory on construction and destruction
+	struct shm_remove
+	{
+		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	} remover;
+
+	//Create shared memory
+	managed_shared_memory segment(create_only,
+		"MySharedMemory",  //segment name
+		65536);
+
+	//Create linked list with 10 nodes in shared memory
+	offset_ptr<list_node> prev = 0, current, first;
+
+	int i;
+	for (i = 0; i < 10; ++i, prev = current) {
+		current = static_cast<list_node*>(segment.allocate(sizeof(list_node)));
+		current->value = i;
+		current->next = 0;
+		if (!prev) first = current;
+		else prev->next = current;
+	}
+
+	//Communicate list to other processes
+	//. . .
+	//When done, destroy list
+	for (current = first; current; /**/) {
+		prev = current;
+		current = current->next;
+		segment.deallocate(prev.get());
 	}
 
 	system("pause");
