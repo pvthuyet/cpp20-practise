@@ -4,16 +4,21 @@
 #include <iostream>
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/offset_ptr.hpp>
+#include <boost/interprocess/containers/vector.hpp>
+#include <boost/interprocess/allocators/allocator.hpp>
 #include <thread>
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[]);
 int Creating_named_shared_memory_objects(int argc, char* argv[]);
 int Using_an_offset_smart_pointer_for_shared_memory(int argc, char* argv[]);
+int Creating_vectors_in_shared_memory(int argc, char* argv[]);
 
 int main(int argc, char* argv[])
 {
 	//return Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(argc, argv);
-	return Creating_named_shared_memory_objects(argc, argv);
+	//return Creating_named_shared_memory_objects(argc, argv);
+	//return Using_an_offset_smart_pointer_for_shared_memory(argc, argv);
+	return Creating_vectors_in_shared_memory(argc, argv);
 }
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[])
@@ -219,13 +224,73 @@ int Using_an_offset_smart_pointer_for_shared_memory(int argc, char* argv[])
 	return 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+int Creating_vectors_in_shared_memory(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	//Define an STL compatible allocator of ints that allocates from the managed_shared_memory.
+	//This allocator will allow placing containers in the segment
+	typedef allocator<int, managed_shared_memory::segment_manager>  ShmemAllocator;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+	//Alias a vector that uses the previous STL-like allocator so that allocates
+	//its values from the segment
+	typedef vector<int, ShmemAllocator> MyVector;
+
+	if (argc == 1) { //Parent process
+		//Remove shared memory on construction and destruction
+		struct shm_remove
+		{
+			shm_remove() { 
+				shared_memory_object::remove("MySharedMemory"); 
+			}
+
+			~shm_remove() { 
+				shared_memory_object::remove("MySharedMemory"); 
+			}
+		} remover;
+
+		//Create a new segment with given name and size
+		managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+
+		//Initialize shared memory STL-compatible allocator
+		const ShmemAllocator alloc_inst(segment.get_segment_manager());
+
+		//Construct a vector named "MyVector" in shared memory with argument alloc_inst
+		MyVector* myvector = segment.construct<MyVector>("MyVector")(alloc_inst);
+
+		std::cout << "Process: " << std::this_thread::get_id() << std::endl;
+		for (int i = 0; i < 100; ++i) { //Insert data in the vector
+			std::cout << i << " ";
+			myvector->push_back(i);
+		}
+		std::cout << std::endl;
+
+		//Launch child process
+		std::string s(argv[0]); s += " child ";
+		if (0 != std::system(s.c_str()))
+			return 1;
+
+		//Check child has destroyed the vector
+		if (segment.find<MyVector>("MyVector").first)
+			return 1;
+	}
+	else {
+		//Child process
+		 //Open the managed segment
+		managed_shared_memory segment(open_only, "MySharedMemory");
+
+		//Find the vector using the c-string name
+		MyVector* myvector = segment.find<MyVector>("MyVector").first;
+
+		//Use vector in reverse order
+		std::sort(myvector->rbegin(), myvector->rend());
+		std::cout << "Process: " << std::this_thread::get_id() << std::endl;
+		std::ranges::copy(*myvector, std::ostream_iterator<int>(std::cout, " "));
+		std::cout << std::endl;
+
+		//When done, destroy the vector from the segment
+		segment.destroy<MyVector>("MyVector");
+	}
+
+	system("pause");
+	return 0;
+}
