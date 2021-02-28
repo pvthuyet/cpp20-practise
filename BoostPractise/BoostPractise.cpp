@@ -11,6 +11,7 @@
 #include <thread>
 #include "SGSharedMemory.h"
 #include "SGMemoryMappedFile.h"
+#include "SynchronizationMechanisms.h"
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[]);
 int Creating_named_shared_memory_objects(int argc, char* argv[]);
@@ -27,8 +28,12 @@ int main(int argc, char* argv[])
 	//return Creating_maps_in_shared_memory(argc, argv);
 	//SGSharedMemory shm{};
 	//return shm.start(argc, argv);
-	SGMemoryMappedFile mmf;
-	mmf.start(argc, argv);
+	
+	//SGMemoryMappedFile mmf;
+	//mmf.start(argc, argv);
+
+	SynchronizationMechanisms synM;
+	synM.start(argc, argv);
 }
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[])

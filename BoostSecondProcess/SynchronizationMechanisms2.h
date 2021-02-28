@@ -1,0 +1,11 @@
+#pragma once
+class SynchronizationMechanisms2
+{
+public:
+	int start(int argc, char* argv[]);
+
+private:
+	int Anonymous_mutex_example(int argc, char* argv[]);
+	int Named_mutex_example(int argc, char* argv[]);
+};
+

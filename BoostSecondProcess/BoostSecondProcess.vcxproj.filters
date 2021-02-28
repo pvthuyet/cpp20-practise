@@ -15,27 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoostPractise.cpp">
+    <ClCompile Include="BoostSecondProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SGSharedMemory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SGMemoryMappedFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SynchronizationMechanisms.cpp">
+    <ClCompile Include="SynchronizationMechanisms2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SGSharedMemory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SGMemoryMappedFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SynchronizationMechanisms.h">
+    <ClInclude Include="SynchronizationMechanisms2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
