@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <thread>
 #include "SGSharedMemory.h"
+#include "SGMemoryMappedFile.h"
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[]);
 int Creating_named_shared_memory_objects(int argc, char* argv[]);
@@ -24,8 +25,10 @@ int main(int argc, char* argv[])
 	//return Using_an_offset_smart_pointer_for_shared_memory(argc, argv);
 	//return Creating_vectors_in_shared_memory(argc, argv);
 	//return Creating_maps_in_shared_memory(argc, argv);
-	SGSharedMemory shm{};
-	return shm.start(argc, argv);
+	//SGSharedMemory shm{};
+	//return shm.start(argc, argv);
+	SGMemoryMappedFile mmf;
+	mmf.start(argc, argv);
 }
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[])

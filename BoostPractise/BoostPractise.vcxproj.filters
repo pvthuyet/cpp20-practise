@@ -21,9 +21,15 @@
     <ClCompile Include="SGSharedMemory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SGMemoryMappedFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SGSharedMemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SGMemoryMappedFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
