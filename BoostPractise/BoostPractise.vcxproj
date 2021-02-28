@@ -148,6 +148,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoostPractise.cpp" />
+    <ClCompile Include="SGSharedMemory.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SGSharedMemory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

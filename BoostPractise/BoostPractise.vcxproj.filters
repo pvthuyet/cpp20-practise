@@ -18,5 +18,13 @@
     <ClCompile Include="BoostPractise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SGSharedMemory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SGSharedMemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
