@@ -77,13 +77,14 @@ int SynchronizationMechanisms::Anonymous_mutex_example(int argc, char* argv[])
 	return 0;
 }
 
+const char* filePath = "D:\\test\\file_name";
 int SynchronizationMechanisms::Named_mutex_example(int argc, char* argv[])
 {
 	using namespace boost::interprocess;
 	try {
 		struct file_remove
 		{
-			file_remove() { std::remove("file_name"); }
+			file_remove() { std::remove(filePath); }
 			//~file_remove() { std::remove("file_name"); }
 		} file_remover;
 
@@ -96,7 +97,11 @@ int SynchronizationMechanisms::Named_mutex_example(int argc, char* argv[])
 		//Open or create the named mutex
 		named_mutex mutex(open_or_create, "fstream_named_mutex");
 
-		std::ofstream file("file_name");
+		std::ofstream file(filePath, std::ios::app);
+		if (!file.is_open()) {
+			std::cout << "Failed open " << filePath << std::endl;
+		}
+
 		for (int i = 0; i < 10; ++i) {
 
 			std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -107,6 +112,7 @@ int SynchronizationMechanisms::Named_mutex_example(int argc, char* argv[])
 			ss << "Process name, " << std::this_thread::get_id() << " ";
 			ss << "This is iteration #" << i << std::endl;
 			file << ss.str();
+			file.flush();
 			std::cout << ss.str();
 		}
 	}
