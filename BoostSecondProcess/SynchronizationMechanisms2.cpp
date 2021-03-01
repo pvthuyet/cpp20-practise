@@ -12,7 +12,8 @@
 int SynchronizationMechanisms2::start(int argc, char* argv[])
 {
 	//return Anonymous_mutex_example(argc, argv);
-	return Named_mutex_example(argc, argv);
+	//return Named_mutex_example(argc, argv);
+	return Anonymous_condition_example(argc, argv);
 }
 
 int SynchronizationMechanisms2::Anonymous_mutex_example(int argc, char* argv[])
@@ -110,6 +111,57 @@ int SynchronizationMechanisms2::Named_mutex_example(int argc, char* argv[])
 			file.flush();
 			std::cout << ss.str();
 		}
+	}
+	catch (interprocess_exception& ex) {
+		std::cout << ex.what() << std::endl;
+		return 1;
+	}
+	system("pause");
+	return 0;
+}
+
+int SynchronizationMechanisms2::Anonymous_condition_example(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	//Create a shared memory object.
+	shared_memory_object shm
+		(open_only                    //only create
+		, "MySharedMemory"              //name
+		, read_write                   //read-write mode
+	);
+	try {
+		//Map the whole shared memory in this process
+		mapped_region region
+			(shm                       //What to map
+			, read_write //Map it as read-write
+		);
+
+		//Get the address of the mapped region
+		void* addr = region.get_address();
+
+		//Obtain a pointer to the shared structure
+		trace_queue* data = static_cast<trace_queue*>(addr);
+
+		//Print messages until the other process marks the end
+		bool end_loop = false;
+
+		do {
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			scoped_lock<interprocess_mutex> lock(data->mutex);
+			if (!data->message_in) {
+				data->cond_empty.wait(lock);
+			}
+			if (std::strcmp(data->items, "last message") == 0) {
+				end_loop = true;
+			}
+			else {
+				//Print the message
+				std::cout << data->items << std::endl;
+				//Notify the other process that the buffer is empty
+				data->message_in = false;
+				data->cond_full.notify_one();
+			}
+		} while (!end_loop);
 	}
 	catch (interprocess_exception& ex) {
 		std::cout << ex.what() << std::endl;

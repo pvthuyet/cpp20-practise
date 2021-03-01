@@ -12,7 +12,8 @@
 int SynchronizationMechanisms::start(int argc, char* argv[])
 {
 	//return Anonymous_mutex_example(argc, argv);
-	return Named_mutex_example(argc, argv);
+	//return Named_mutex_example(argc, argv);
+	return Anonymous_condition_example(argc, argv);
 }
 
 int SynchronizationMechanisms::Anonymous_mutex_example(int argc, char* argv[])
@@ -117,6 +118,77 @@ int SynchronizationMechanisms::Named_mutex_example(int argc, char* argv[])
 		}
 	}
 	catch (interprocess_exception& ex) {
+		std::cout << ex.what() << std::endl;
+		return 1;
+	}
+	system("pause");
+	return 0;
+}
+
+int SynchronizationMechanisms::Anonymous_condition_example(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	//Erase previous shared memory and schedule erasure on exit
+	struct shm_remove
+	{
+		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	} remover;
+
+	//Create a shared memory object.
+	shared_memory_object shm
+		(create_only               //only create
+		, "MySharedMemory"           //name
+		, read_write                //read-write mode
+	);
+
+	try {
+		//Set size
+		shm.truncate(sizeof(trace_queue));
+
+		//Map the whole shared memory in this process
+		mapped_region region
+			(shm                       //What to map
+			, read_write //Map it as read-write
+		);
+
+		//Get the address of the mapped region
+		void* addr = region.get_address();
+
+		//Construct the shared structure in memory
+		trace_queue* data = new (addr) trace_queue;
+
+		const int NumMsg = 100;
+		for (int i = 0; i < NumMsg; ++i) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			scoped_lock<interprocess_mutex> lock(data->mutex);
+			if (data->message_in) {
+				data->cond_full.wait(lock);
+			}
+			if (i == NumMsg - 1) {
+				std::snprintf(data->items,
+					trace_queue::LineSize,
+					"%s",
+					"last message"
+				);
+			}
+			else {
+				std::snprintf(data->items,
+					trace_queue::LineSize,
+					"%s_%d",
+					"my_trace", i);
+			}
+			std::cout << data->items << std::endl;
+
+			//Notify to the other process that there is a message
+			data->cond_empty.notify_one();
+
+			//Mark message buffer as full
+			data->message_in = true;
+		}
+
+	}
+	catch (interprocess_exception &ex) {
 		std::cout << ex.what() << std::endl;
 		return 1;
 	}
