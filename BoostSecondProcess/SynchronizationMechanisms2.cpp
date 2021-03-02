@@ -7,13 +7,17 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
+#include <boost/interprocess/ipc/message_queue.hpp>
+#include <vector>
 #include "SharedMemoryLog.h"
 
 int SynchronizationMechanisms2::start(int argc, char* argv[])
 {
 	//return Anonymous_mutex_example(argc, argv);
 	//return Named_mutex_example(argc, argv);
-	return Anonymous_condition_example(argc, argv);
+	//return Anonymous_condition_example(argc, argv);
+	//return Anonymous_semaphore_example(argc, argv);
+	return Using_a_message_queue(argc, argv);
 }
 
 int SynchronizationMechanisms2::Anonymous_mutex_example(int argc, char* argv[])
@@ -167,6 +171,84 @@ int SynchronizationMechanisms2::Anonymous_condition_example(int argc, char* argv
 		std::cout << ex.what() << std::endl;
 		return 1;
 	}
+	system("pause");
+	return 0;
+}
+
+int SynchronizationMechanisms2::Anonymous_semaphore_example(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	//Remove shared memory on destruction
+	struct shm_remove
+	{
+		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	} remover;
+
+	//Create a shared memory object.
+	shared_memory_object shm
+		(open_only                    //only create
+		, "MySharedMemory"              //name
+		, read_write  //read-write mode
+	);
+
+	//Map the whole shared memory in this process
+	mapped_region region
+		(shm                       //What to map
+		, read_write //Map it as read-write
+	);
+
+	//Get the address of the mapped region
+	void* addr = region.get_address();
+
+	//Obtain the shared structure
+	shared_memory_buffer* data = static_cast<shared_memory_buffer*>(addr);
+
+	const int NumMsg = 100;
+	int extracted_data[NumMsg];
+
+	//Extract the data
+	for (int i = 0; i < NumMsg; ++i) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		data->nstored.wait();
+		data->mutex.wait();
+		extracted_data[i] = data->items[i % shared_memory_buffer::NumItems];
+		std::cout << extracted_data[i] << " ";
+		data->mutex.post();
+		data->nempty.post();
+	}
+	system("pause");
+	return 0;
+}
+
+int SynchronizationMechanisms2::Using_a_message_queue(int argc, char* argv[])
+{
+	using namespace boost::interprocess;
+	try {
+		//Open a message queue.
+		message_queue mq
+			(open_only        //only create
+			, "message_queue"  //name
+		);
+
+		unsigned int priority;
+		message_queue::size_type recvd_size;
+
+		//Receive 100 numbers
+		for (int i = 0; i < 100; ++i) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			int number;
+			mq.receive(&number, sizeof(number), recvd_size, priority);
+			if (number != i || recvd_size != sizeof(number))
+				return 1;
+			std::cout << "received: " << number << "\n";
+		}
+	}
+	catch (interprocess_exception& ex) {
+		message_queue::remove("message_queue");
+		std::cout << ex.what() << std::endl;
+		return 1;
+	}
+	message_queue::remove("message_queue");
 	system("pause");
 	return 0;
 }
