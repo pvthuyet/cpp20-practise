@@ -10,5 +10,6 @@ private:
 	int Anonymous_condition_example(int argc, char* argv[]);
 	int Anonymous_semaphore_example(int argc, char* argv[]);
 	int Using_a_message_queue(int argc, char* argv[]);
+	int use_of_managed_external_buffer(int argc, char* argv[]);
 };
 
