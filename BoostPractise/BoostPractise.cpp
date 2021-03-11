@@ -12,12 +12,14 @@
 #include "SGSharedMemory.h"
 #include "SGMemoryMappedFile.h"
 #include "SynchronizationMechanisms.h"
+#include "IPCSmartPointer.h"
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[]);
 int Creating_named_shared_memory_objects(int argc, char* argv[]);
 int Using_an_offset_smart_pointer_for_shared_memory(int argc, char* argv[]);
 int Creating_vectors_in_shared_memory(int argc, char* argv[]);
 int Creating_maps_in_shared_memory(int argc, char* argv[]);
+int ipc_smart_pointer_example();
 
 int main(int argc, char* argv[])
 {
@@ -32,8 +34,9 @@ int main(int argc, char* argv[])
 	//SGMemoryMappedFile mmf;
 	//mmf.start(argc, argv);
 
-	SynchronizationMechanisms synM;
-	synM.start(argc, argv);
+	//SynchronizationMechanisms synM;
+	//synM.start(argc, argv);
+	return ipc_smart_pointer_example();
 }
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[])
@@ -394,4 +397,9 @@ int Creating_maps_in_shared_memory(int argc, char* argv[])
 	}
 	system("pause");
 	return 0;
+}
+
+int ipc_smart_pointer_example()
+{
+	return IPCSmartPointer{}.intrusivePointer();
 }

@@ -27,6 +27,9 @@
     <ClCompile Include="SynchronizationMechanisms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IPCSmartPointer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SGSharedMemory.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SynchronizationMechanisms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IPCSmartPointer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -148,11 +148,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoostPractise.cpp" />
+    <ClCompile Include="IPCSmartPointer.cpp" />
     <ClCompile Include="SGMemoryMappedFile.cpp" />
     <ClCompile Include="SGSharedMemory.cpp" />
     <ClCompile Include="SynchronizationMechanisms.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IPCSmartPointer.h" />
     <ClInclude Include="SGMemoryMappedFile.h" />
     <ClInclude Include="SGSharedMemory.h" />
     <ClInclude Include="SynchronizationMechanisms.h" />
