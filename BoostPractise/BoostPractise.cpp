@@ -21,6 +21,7 @@ int Creating_vectors_in_shared_memory(int argc, char* argv[]);
 int Creating_maps_in_shared_memory(int argc, char* argv[]);
 int ipc_smart_pointer_example();
 int ipc_scoped_pointer_example();
+int ipc_shared_weak_pointer_example();
 
 int main(int argc, char* argv[])
 {
@@ -38,7 +39,8 @@ int main(int argc, char* argv[])
 	//SynchronizationMechanisms synM;
 	//synM.start(argc, argv);
 	//return ipc_smart_pointer_example();
-	return ipc_scoped_pointer_example();
+	//return ipc_scoped_pointer_example();
+	return ipc_shared_weak_pointer_example();
 }
 
 int Using_shared_memory_as_a_pool_of_unnamed_memory_blocks(int argc, char* argv[])
@@ -409,4 +411,9 @@ int ipc_smart_pointer_example()
 int ipc_scoped_pointer_example()
 {
 	return  IPCSmartPointer{}.scopedPointer();
+}
+
+int ipc_shared_weak_pointer_example()
+{
+	return  IPCSmartPointer{}.shared_ptr_and_weak_ptr();
 }

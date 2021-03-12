@@ -3,6 +3,9 @@
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/smart_ptr/intrusive_ptr.hpp>
 #include <boost/interprocess/smart_ptr/scoped_ptr.hpp>
+#include <boost/interprocess/smart_ptr/deleter.hpp>
+#include <boost/interprocess/smart_ptr/shared_ptr.hpp>
+#include <boost/interprocess/allocators/allocator.hpp>
 
 using namespace boost::interprocess;
 
@@ -171,5 +174,36 @@ int IPCSmartPointer::scopedPointer()
 			}
 		}
 	}
+	return 0;
+}
+
+namespace SharedAndWeak
+{
+	class MyType {};
+	using segment_manager_type = managed_shared_memory::segment_manager;
+	using void_allocator_type = allocator<void, segment_manager_type>;
+	using deleter_type = deleter<MyType, segment_manager_type>;
+	using my_shared_ptr = shared_ptr<MyType, void_allocator_type, deleter_type>;
+}
+
+int IPCSmartPointer::shared_ptr_and_weak_ptr()
+{
+	using namespace SharedAndWeak;
+	//Remove shared memory on construction and destruction
+	struct shm_remove
+	{
+		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	} remover;
+
+	managed_shared_memory segment(create_only, "MySharedMemory", 4096);
+
+	my_shared_ptr &shInstance = *segment.construct<my_shared_ptr>("shared ptr")
+		(segment.construct<MyType>("object to shared")()
+			, void_allocator_type(segment.get_segment_manager())
+			, deleter_type(segment.get_segment_manager())
+			);
+	BOOST_ASSERT(shInstance.use_count() == 1);
+	segment.destroy_ptr(&shInstance);
 	return 0;
 }
