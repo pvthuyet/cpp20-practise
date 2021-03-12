@@ -2,6 +2,7 @@
 
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/smart_ptr/intrusive_ptr.hpp>
+#include <boost/interprocess/smart_ptr/scoped_ptr.hpp>
 
 using namespace boost::interprocess;
 
@@ -94,5 +95,81 @@ int IPCSmartPointer::intrusivePointer()
 		return 1;
 	}
 	// Success
+	return 0;
+}
+
+namespace scp 
+{
+	class my_class
+	{};
+
+	class my_exception
+	{};
+
+	//A functor that destroys the shared memory object
+	template<class T>
+	class my_deleter 
+	{
+	private:
+		using segment_manager = managed_shared_memory::segment_manager;
+		segment_manager* mp_segment_manager;
+
+	public:
+		using pointer = T*;
+		my_deleter(segment_manager* s_mngr) :
+			mp_segment_manager{s_mngr}
+		{}
+
+		void operator()(pointer object_to_delete)
+		{
+			BOOST_ASSERT_MSG(nullptr != mp_segment_manager, "Segment manager is null");
+			mp_segment_manager->destroy_ptr(object_to_delete);
+		}
+	};
+}
+int IPCSmartPointer::scopedPointer()
+{
+	using namespace scp;
+	//Create shared memory
+	//Remove shared memory on construction and destruction
+	struct shm_remove
+	{
+		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	} remover;
+
+	managed_shared_memory shmem(create_only, "MySharedMemory", 10000);
+
+	for (int i = 0; i < 2; ++i) {
+		scp::my_class* my_object = shmem.construct<scp::my_class>("my_object")();
+		my_class* my_object2 = shmem.construct<my_class>(anonymous_instance)();
+		shmem.destroy_ptr(my_object2);
+
+		my_deleter<my_class> d(shmem.get_segment_manager());
+		try {
+			scoped_ptr<my_class, my_deleter<my_class>> s_ptr(my_object, d);
+			if (i == 1) {
+				throw my_exception();
+			}
+			s_ptr.release();
+		}
+		catch (const my_exception&) {
+
+		}
+
+		if (0 == i) {
+			if (!shmem.find<my_class>("my_object").first) {
+				return 1;
+			}
+
+			shmem.destroy<my_class>("my_object");
+		}
+		else {
+			//Make sure the object has been deleted
+			if (shmem.find<my_class>("my_object").first) {
+				return 1;
+			}
+		}
+	}
 	return 0;
 }

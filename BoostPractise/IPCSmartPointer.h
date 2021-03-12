@@ -3,5 +3,6 @@ class IPCSmartPointer
 {
 public:
 	int intrusivePointer();
+	int scopedPointer();
 };
 
