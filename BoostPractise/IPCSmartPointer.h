@@ -6,5 +6,6 @@ public:
 	int scopedPointer();
 	int sharedPointer();
 	int sharedWeakPointer();
+	int uniquePointer();
 };
 
