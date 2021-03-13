@@ -1,10 +1,12 @@
 #include "IPCSmartPointer.h"
 
 #include <boost/interprocess/managed_shared_memory.hpp>
+#include <boost/interprocess/managed_mapped_file.hpp>
 #include <boost/interprocess/smart_ptr/intrusive_ptr.hpp>
 #include <boost/interprocess/smart_ptr/scoped_ptr.hpp>
 #include <boost/interprocess/smart_ptr/deleter.hpp>
 #include <boost/interprocess/smart_ptr/shared_ptr.hpp>
+#include <boost/interprocess/smart_ptr/weak_ptr.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 
 using namespace boost::interprocess;
@@ -177,7 +179,7 @@ int IPCSmartPointer::scopedPointer()
 	return 0;
 }
 
-namespace SharedAndWeak
+namespace SharedOnly
 {
 	class MyType {};
 	using segment_manager_type = managed_shared_memory::segment_manager;
@@ -186,9 +188,9 @@ namespace SharedAndWeak
 	using my_shared_ptr = shared_ptr<MyType, void_allocator_type, deleter_type>;
 }
 
-int IPCSmartPointer::shared_ptr_and_weak_ptr()
+int IPCSmartPointer::sharedPointer()
 {
-	using namespace SharedAndWeak;
+	using namespace SharedOnly;
 	//Remove shared memory on construction and destruction
 	struct shm_remove
 	{
@@ -197,7 +199,6 @@ int IPCSmartPointer::shared_ptr_and_weak_ptr()
 	} remover;
 
 	managed_shared_memory segment(create_only, "MySharedMemory", 4096);
-
 	my_shared_ptr &shInstance = *segment.construct<my_shared_ptr>("shared ptr")
 		(segment.construct<MyType>("object to shared")()
 			, void_allocator_type(segment.get_segment_manager())
@@ -205,5 +206,107 @@ int IPCSmartPointer::shared_ptr_and_weak_ptr()
 			);
 	BOOST_ASSERT(shInstance.use_count() == 1);
 	segment.destroy_ptr(&shInstance);
+	return 0;
+}
+
+
+namespace SharedAndWeak
+{
+	struct type_to_share {};
+	using shared_ptr_type = managed_shared_ptr<type_to_share, managed_mapped_file>::type;
+	using weak_ptr_type = managed_weak_ptr<type_to_share, managed_mapped_file>::type;
+
+	struct shared_ptr_owner
+	{
+		shared_ptr_owner(const shared_ptr_type &sharedType) :
+			shared_ptr_(sharedType)
+		{}
+		shared_ptr_owner(const shared_ptr_owner& other) :
+			shared_ptr_(other.shared_ptr_)
+		{}
+
+		shared_ptr_type shared_ptr_;
+	};
+}
+
+int IPCSmartPointer::sharedWeakPointer()
+{
+	using namespace SharedAndWeak;
+	const char* MappedFile = "MyMappedFile";
+	struct file_remove
+	{
+		file_remove(const char *MappedFile) :
+			MappedFile_{ MappedFile }
+		{
+			file_mapping::remove(MappedFile_);
+		}
+		~file_remove()
+		{
+			file_mapping::remove(MappedFile_);
+		}
+		const char* MappedFile_{};
+	} remover(MappedFile);
+	
+	{
+		managed_mapped_file file(create_only, MappedFile, 65536);
+		shared_ptr_type local_shared_ptr = make_managed_shared_ptr(
+			file.construct<type_to_share>("object to shared")(), file);
+		BOOST_ASSERT(local_shared_ptr.use_count() == 1);
+
+		//Share ownership of the object between local_shared_ptr and a new "owner1"
+		shared_ptr_owner* owner1 = file.construct<shared_ptr_owner>("owner1")(local_shared_ptr);
+		BOOST_ASSERT(local_shared_ptr.use_count() == 2);
+
+		//local_shared_ptr releases object ownership
+		local_shared_ptr.reset();
+		BOOST_ASSERT(local_shared_ptr.use_count() == 0);
+		BOOST_ASSERT(owner1->shared_ptr_.use_count() == 1);
+
+		//Share ownership of the object between "owner1" and a new "owner2"
+		auto owner2 = file.construct<shared_ptr_owner>("owner2")(*owner1);
+		BOOST_ASSERT(owner1->shared_ptr_.use_count() == 2);
+		BOOST_ASSERT(owner2->shared_ptr_.use_count() == 2);
+		BOOST_ASSERT(owner1->shared_ptr_.get() == owner2->shared_ptr_.get());
+	}//The mapped file is unmapped here. Objects have been flushed to disk
+	{
+		//Reopen the mapped file and find again all owners
+		managed_mapped_file file(open_only, MappedFile);
+		shared_ptr_owner *owner1 = file.find<shared_ptr_owner>("owner1").first;
+		shared_ptr_owner* owner2 = file.find<shared_ptr_owner>("owner2").first;
+		BOOST_ASSERT(owner1 && owner2);
+
+		//Check everything is as expected
+		BOOST_ASSERT(file.find<type_to_share>("object to shared").first != 0);
+		BOOST_ASSERT(owner1->shared_ptr_.use_count() == 2);
+		BOOST_ASSERT(owner2->shared_ptr_.use_count() == 2);
+		BOOST_ASSERT(owner1->shared_ptr_.get() == owner2->shared_ptr_.get());
+
+		//Now destroy one of the owners, the reference count drops.
+		file.destroy_ptr(owner1);
+		BOOST_ASSERT(owner2->shared_ptr_.use_count() == 1);
+
+		//Create a weak pointer
+		weak_ptr_type local_observer1(owner2->shared_ptr_);
+		BOOST_ASSERT(local_observer1.use_count() == owner2->shared_ptr_.use_count());
+		{
+			//Create a local shared pointer from the weak pointer
+			auto local_shared_ptr = local_observer1.lock();
+			BOOST_ASSERT(local_observer1.use_count() == owner2->shared_ptr_.use_count());
+			BOOST_ASSERT(local_observer1.use_count() == 2);
+		}
+
+		//Now destroy the remaining owner. "object to share" will be destroyed
+		file.destroy_ptr(owner2);
+		BOOST_ASSERT(file.find<type_to_share>("object to share").first == 0);
+
+		// Test observer
+		BOOST_ASSERT(local_observer1.expired());
+		BOOST_ASSERT(local_observer1.use_count() == 0);
+
+
+		//The reference count will be deallocated when all weak pointers
+		//disappear. After that, the file is unmapped.
+	}
+
 	return 0;
 }

@@ -415,5 +415,6 @@ int ipc_scoped_pointer_example()
 
 int ipc_shared_weak_pointer_example()
 {
-	return  IPCSmartPointer{}.shared_ptr_and_weak_ptr();
+	//return  IPCSmartPointer{}.sharedPointer();
+	return IPCSmartPointer{}.sharedWeakPointer();
 }
